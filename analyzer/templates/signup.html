@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SmartCV | Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <style>
+
+    </style>
+
+    <style>
+        /* --- 07. FOOTER STYLES --- */
+        .site-footer {
+            background-color: #1B263B;
+            /* Your primary-dark color */
+            color: #FFFFFF;
+            padding: 70px 10% 30px;
+            margin-top: 50px;
+        }
+
+        .text-muted-custom {
+            color: #b8b2c7;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #b8b2c7;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: #FFFFFF;
+            transform: translateX(5px);
+        }
+
+        .social-links a {
+            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.1);
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #2563eb;
+            transform: translateY(-3px);
+        }
+
+        .form-label {
+            color: #181717 !important;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 0.9rem;
+        }
+    </style>
+
+</head>
+{% block content %}
+
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top custom-nav">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+                <img src="{% static 'images/home-page-img/logo.png' %}" alt="Logo" height="35">
+                <span class="fw-bold text-primary-dark">SmartCV</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-lg-3">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{% url 'about' %}">ABOUT US</a></li>
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-person-circle me-2"></i>LOGIN
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'signup' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-person-plus-fill me-2"></i>SIGNUP
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-lg rounded-4 p-4" style="background-color: #fcfcfc;">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-dark">Create Account</h2>
+                    <p class="text-muted">Start building your ATS-ready CV today.</p>
+                </div>
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                    <div class="mb-3 {% if field.name == 'terms' %}form-check mt-4{% endif %}">
+                        
+                        {% if field.name != 'terms' %}
+                            <label class="form-label small fw-bold text-secondary">{{ field.label }}</label>
+                        {% endif %}
+
+                        {{ field }}
+
+                        {% if field.name == 'terms' %}
+                            <label class="form-check-label small text-muted" for="{{ field.id_for_label }}">
+                                {{ field.label }}
+                            </label>
+                        {% endif %}
+
+                        {% if field.errors %}
+                        <div class="text-danger small mt-1 fw-semibold">
+                            {{ field.errors|striptags }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm rounded-3">Sign Up</button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="small text-muted">Already have an account? 
+                        <a href="{% url 'login' %}" class="text-primary fw-bold text-decoration-none border-bottom border-primary">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <div class="footer-brand mb-4 d-flex align-items-center gap-2">
+                        <img src="{% static 'analyzer/images/logo.png' %}" alt="Logo" height="35">
+                        <span class="h5 fw-bold mb-0">SmartCV</span>
+                    </div>
+                    <p class="text-muted-custom mb-4">
+                        Bridge the gap between talent and technology. Our mission is to transform
+                        standard resumes into high-impact professional assets through
+                        intelligent, ATS-optimized design.
+                    </p>
+                    <div class="social-links d-flex gap-3">
+                        <a href="#"><i class="bi bi-envelope"></i></a>
+                        <a href="#"><i class="bi bi-linkedin"></i></a>
+                        <a href="#"><i class="bi bi-github"></i></a>
+                        <a href="#"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <h6 class="fw-bold text-white mb-4">CORE FEATURES</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{% url 'signup' %}">Secure Auth & Registration</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'create_cv' %}">Dynamic CV Builder</a></li>
+                        <li><a href="{% url 'dashboard' %}">Premium Templates</a></li>
+                        <li><a href="{% url 'dashboard' %}">Real-time ATS Scoring</a></li>
+                        <li><a href="{% url 'dashboard' %}">Style & Font Management</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}">Dynamic CV Builder</a></li>
+                        <li><a href="{% url 'login' %}">Premium Templates</a></li>
+                        <li><a href="{% url 'login' %}">Real-time ATS Scoring</a></li>
+                        <li><a href="{% url 'login' %}">Style & Font Management</a></li>
+                        {% endif %}
+
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <h6 class="fw-bold text-white mb-4">QUICK LINKS</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{% url 'home' %}">HOME</a></li>
+                        <li><a href="{% url 'about' %}">ABOUT US</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'create_cv' %}">CREATE CV</a></li>
+                        <li><a href="{% url 'dashboard' %}">DASHBOARD</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}">CREATE CV</a></li>
+                        <li><a href="{% url 'login' %}">DASHBOARD</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'login' %}">LOGIN</a></li>
+                        <li><a href="{% url 'signup' %}">SIGN UP</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-5 border-secondary">
+            <div class="text-center text-muted-custom py-3 small">
+                &copy; 2026 Smart CV Builder Project. Designed for BCA Final Year Submission.
+            </div>
+        </div>
+    </footer>
+
+    {% endblock %}

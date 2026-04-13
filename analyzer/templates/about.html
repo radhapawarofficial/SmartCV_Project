@@ -1,0 +1,1542 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About SmartCV</title>
+    <meta name="description"
+        content="Learn how SmartCV uses NLP and AI to bridge the gap between talent and opportunity. Discover our mission, core values, and the technology powering every CV.">
+    <meta name="robots" content="index, follow">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+
+    <style>
+        /* ==========================================================================
+   SMARTCV · ABOUT PAGE — COMPLETE UNIFIED STYLE SYSTEM
+   Single self-contained stylesheet. No external about.css required.
+   ========================================================================== */
+
+        /* --- 01. GLOBAL DESIGN TOKENS --- */
+        :root {
+            --primary-dark: #1B263B;
+            --primary-slate: #415A77;
+            --royal-blue: #2563eb;
+            --dark-navy: #1e293b;
+            --slate-grey: #64748b;
+            --bg-light: #F8F9FA;
+            --bg-tint: #f0f4f8;
+            --white: #FFFFFF;
+            --action-blue: #1a80f0;
+            --steel-blue: #a1b1cc;
+            --border-soft: #f1f5f9;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 10px 28px rgba(27, 38, 59, 0.11);
+            --shadow-lg: 0 20px 50px rgba(27, 38, 59, 0.15);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--primary-dark);
+            overflow-x: hidden;
+            line-height: 1.65;
+        }
+
+        /* --- 02. TYPOGRAPHY HELPERS --- */
+        .fw-800 {
+            font-weight: 800;
+        }
+
+        .fw-700 {
+            font-weight: 700;
+        }
+
+        .fw-600 {
+            font-weight: 600;
+        }
+
+        .text-primary-dark {
+            color: var(--primary-dark);
+        }
+
+        .text-royal-blue {
+            color: var(--royal-blue);
+        }
+
+        .text-dark-navy {
+            color: var(--dark-navy);
+        }
+
+        .text-slate {
+            color: var(--slate-grey);
+        }
+
+        .text-steel-blue {
+            color: var(--steel-blue);
+        }
+
+        .text-muted-custom {
+            color: #b8b2c7;
+        }
+
+        .text-muted-white {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .bg-primary-dark {
+            background-color: var(--primary-dark) !important;
+        }
+
+        /* --- 03. SHARED SECTION EYEBROW LABEL --- */
+        .eyebrow {
+            display: inline-block;
+            font-size: 0.70rem;
+            font-weight: 800;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--royal-blue);
+        }
+
+        .eyebrow::after {
+            content: '';
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: var(--royal-blue);
+            margin: 5px auto 0;
+            border-radius: 2px;
+        }
+
+        .eyebrow-light {
+            color: rgba(99, 179, 237, 0.9);
+        }
+
+        .eyebrow-light::after {
+            background: rgba(99, 179, 237, 0.5);
+        }
+
+        /* --- 04. NAVBAR --- */
+        .custom-nav {
+            background-color: var(--primary-dark) !important;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .custom-nav .nav-link {
+            color: rgba(255, 255, 255, 0.72) !important;
+            font-weight: 600;
+            font-size: 0.88rem;
+            letter-spacing: 0.04em;
+            transition: color 0.25s;
+        }
+
+        .custom-nav .nav-link:hover,
+        .custom-nav .nav-link.active {
+            color: #fff !important;
+        }
+
+        .navbar-toggler {
+            filter: invert(1);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* --- 05. BUTTONS --- */
+        .btn-outline-primary {
+            background-color: var(--royal-blue) !important;
+            color: #fff !important;
+            border: 2px solid var(--royal-blue) !important;
+            font-weight: 700 !important;
+            border-radius: 8px !important;
+            padding: 10px 24px !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #1d4ed8 !important;
+            border-color: #1d4ed8 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-royal {
+            background-color: var(--royal-blue);
+            color: #fff;
+            border: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            padding: 12px 28px;
+            border-radius: 10px;
+        }
+
+        .btn-royal:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(37, 99, 235, 0.35);
+            color: #fff;
+        }
+
+
+        /* ══════════════════════════════════════════════════════════════════════════
+   §1 · MISSION HERO  ▸  dark full-bleed
+══════════════════════════════════════════════════════════════════════════ */
+        .mission-hero {
+            background-color: var(--primary-dark);
+            color: #fff;
+            padding: 110px 0 90px;
+            position: relative;
+        }
+
+        .mission-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            animation: blobFloat 8s ease-in-out infinite alternate;
+        }
+
+        .mission-blob-1 {
+            width: 520px;
+            height: 520px;
+            background: rgba(37, 99, 235, 0.18);
+            top: -120px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .mission-blob-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(6, 182, 212, 0.12);
+            top: 40%;
+            right: -80px;
+            animation-delay: 2.5s;
+        }
+
+        .mission-blob-3 {
+            width: 300px;
+            height: 300px;
+            background: rgba(37, 99, 235, 0.10);
+            bottom: 0;
+            left: 35%;
+            animation-delay: 5s;
+        }
+
+        @keyframes blobFloat {
+            from {
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                transform: translateY(28px) scale(1.05);
+            }
+        }
+
+        .mission-eyebrow {
+            font-size: 0.70rem;
+            font-weight: 800;
+            letter-spacing: 0.22em;
+            color: rgba(99, 179, 237, 0.9);
+            text-transform: uppercase;
+        }
+
+        .mission-eyebrow::before,
+        .mission-eyebrow::after {
+            content: '';
+            display: inline-block;
+            width: 22px;
+            height: 1px;
+            background: rgba(99, 179, 237, 0.4);
+            vertical-align: middle;
+            margin: 0 10px;
+        }
+
+        .mission-headline {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.4rem, 5vw, 3.8rem);
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .mission-highlight {
+            background: linear-gradient(135deg, #93c5fd 0%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mission-subtext {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.62);
+            max-width: 640px;
+            line-height: 1.78;
+        }
+
+        .mission-cta {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-cta::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .mission-cta:hover::after {
+            transform: translateX(0);
+        }
+
+        .mission-stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 16px;
+            padding: 22px 14px;
+            backdrop-filter: blur(10px);
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .mission-stat-card:hover {
+            border-color: rgba(37, 99, 235, 0.5);
+            transform: translateY(-4px);
+        }
+
+        .mission-stat-number {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .mission-stat-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.46);
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+
+
+        /* ══════════════════════════════════════════════════════════════════════════
+   §2 · PROBLEM & SOLUTION  ▸  off-white
+══════════════════════════════════════════════════════════════════════════ */
+        .problem-solution-section {
+            background-color: var(--bg-tint);
+        }
+
+        .ps-card {
+            background: #fff;
+            border-radius: 22px;
+            padding: 38px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s, transform 0.3s;
+            height: 100%;
+        }
+
+        .ps-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+        }
+
+        .ps-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 22px 22px 0 0;
+        }
+
+        .ps-problem::before {
+            background: linear-gradient(90deg, #ef4444, #fb923c);
+        }
+
+        .ps-solution::before {
+            background: linear-gradient(90deg, #2563eb, #06b6d4);
+        }
+
+        .ps-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ps-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ps-icon-problem {
+            background: rgba(239, 68, 68, 0.10);
+            color: #ef4444;
+        }
+
+        .ps-icon-solution {
+            background: rgba(37, 99, 235, 0.10);
+            color: var(--royal-blue);
+        }
+
+        .ps-card-tag {
+            font-size: 0.66rem;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .ps-tag-problem {
+            background: rgba(239, 68, 68, 0.10);
+            color: #dc2626;
+        }
+
+        .ps-tag-solution {
+            background: rgba(37, 99, 235, 0.10);
+            color: var(--royal-blue);
+        }
+
+        .ps-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .ps-point:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .ps-point-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .ps-point-icon-problem {
+            background: rgba(239, 68, 68, 0.10);
+            color: #ef4444;
+        }
+
+        .ps-point-icon-solution {
+            background: rgba(37, 99, 235, 0.10);
+            color: var(--royal-blue);
+        }
+
+
+        /* ══════════════════════════════════════════════════════════════════════════
+   §3 · STRATEGIC FOUNDATION  ▸  dark
+══════════════════════════════════════════════════════════════════════════ */
+        .vision-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            transition: 0.3s ease;
+            height: 100%;
+        }
+
+        .vision-card:hover {
+            border-color: var(--action-blue) !important;
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+
+        /* ══════════════════════════════════════════════════════════════════════════
+   §4 · ATS SCORE  ▸  white
+══════════════════════════════════════════════════════════════════════════ */
+        /* Uses Bootstrap utilities only — no custom classes needed */
+
+
+        /* ══════════════════════════════════════════════════════════════════════════
+   §5 · CORE VALUES  ▸  dark glassmorphism
+══════════════════════════════════════════════════════════════════════════ */
+        .cv-bg-dots {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+            background-size: 28px 28px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .value-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 22px;
+            padding: 36px 30px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, transform 0.3s, background 0.3s;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            height: 100%;
+        }
+
+        .value-card:hover {
+            border-color: rgba(37, 99, 235, 0.5);
+            background: rgba(255, 255, 255, 0.07);
+            transform: translateY(-6px);
+        }
+
+        .value-card--featured {
+            background: rgba(37, 99, 235, 0.10);
+            border-color: rgba(37, 99, 235, 0.30);
+            box-shadow: 0 0 40px rgba(37, 99, 235, 0.15);
+        }
+
+        .value-card--featured:hover {
+            border-color: rgba(37, 99, 235, 0.6);
+            background: rgba(37, 99, 235, 0.15);
+        }
+
+        .value-card-num {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 3rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.035);
+            line-height: 1;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .value-card-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #93c5fd;
+            transition: background 0.3s;
+        }
+
+        .value-card:hover .value-card-icon {
+            background: rgba(37, 99, 235, 0.22);
+        }
+
+        .value-card--featured .value-card-icon {
+            background: rgba(37, 99, 235, 0.20);
+            border-color: rgba(37, 99, 235, 0.40);
+            color: #fff;
+        }
+
+        .value-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .value-tag {
+            font-size: 0.67rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.07);
+            color: rgba(255, 255, 255, 0.50);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            text-transform: uppercase;
+        }
+
+
+        /* ══════════════════════════════════════════════════════════════════════════
+   §6 · TECH STACK  ▸  white grid
+══════════════════════════════════════════════════════════════════════════ */
+        .tech-stack-section {
+            background: #fff;
+            border-top: 1px solid #eef2f7;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .tech-card {
+            background: #fff;
+            border: 1px solid #e9eef5;
+            border-radius: 18px;
+            padding: 30px 18px 24px;
+            transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+            height: 100%;
+        }
+
+        .tech-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-5px);
+            border-color: rgba(37, 99, 235, 0.28);
+        }
+
+        .tech-card-icon {
+            width: 62px;
+            height: 62px;
+            background: #eff4ff;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: var(--royal-blue);
+            transition: background 0.3s;
+        }
+
+        .tech-card:hover .tech-card-icon {
+            background: rgba(37, 99, 235, 0.13);
+        }
+
+        .tech-card-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--dark-navy);
+            margin-bottom: 4px;
+        }
+
+        .tech-card-desc {
+            font-size: 0.75rem;
+            color: var(--slate-grey);
+            margin-bottom: 12px;
+            line-height: 1.45;
+        }
+
+        /* ══════════════════════════════════════════════════════════════════════════
+   §7 · 5 STEPS  ▸  dark horizontal
+══════════════════════════════════════════════════════════════════════════ */
+        .workflow-line-horizontal {
+            position: absolute;
+            top: 50px;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .icon-circle-step {
+            width: 100px;
+            height: 100px;
+            background-color: #1a2436;
+            border: 1px solid rgba(161, 177, 204, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .icon-circle-step:hover {
+            border-color: var(--royal-blue);
+            transform: scale(1.06);
+        }
+
+        .step-huge-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--steel-blue);
+            opacity: 0.9;
+        }
+
+
+        /* ══════════════════════════════════════════════════════════════════════════
+   §8 · OUR PROCESS  ▸  white vertical workflow
+══════════════════════════════════════════════════════════════════════════ */
+        .workflow-line {
+            position: absolute;
+            left: 40px;
+            top: 0;
+            height: 100%;
+            border-left: 2px solid #e2e8f0;
+            z-index: 0;
+        }
+
+        .workflow-item {
+            position: relative;
+            z-index: 1;
+            padding-bottom: 3rem;
+        }
+
+        .circle-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 2px solid var(--border-soft) !important;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-badge {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            transform: translate(-50%, -50%);
+            background-color: var(--slate-grey);
+            color: var(--white);
+            font-size: 10px;
+            min-width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+
+        /* ══════════════════════════════════════════════════════════════════════════
+   §9 · FOOTER
+══════════════════════════════════════════════════════════════════════════ */
+        .site-footer {
+            background-color: var(--primary-dark);
+            color: #fff;
+            padding: 70px 10% 30px;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #b8b2c7;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .social-links a {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #2563eb;
+            transform: translateY(-3px);
+        }
+
+
+        /* ══════════════════════════════════════════════════════════════════════════
+   §10 · RESPONSIVE
+══════════════════════════════════════════════════════════════════════════ */
+        @media (max-width:991px) {
+            .mission-hero {
+                padding: 75px 0 65px;
+            }
+
+            .mission-headline {
+                font-size: 2.3rem;
+            }
+
+            .workflow-line-horizontal {
+                display: none !important;
+            }
+        }
+
+        @media (max-width:767px) {
+            .mission-hero {
+                padding: 60px 0 50px;
+            }
+
+            .mission-subtext {
+                font-size: 1rem;
+            }
+
+            .ps-card {
+                padding: 24px 20px;
+            }
+
+            .value-card {
+                padding: 28px 20px;
+            }
+
+            .tech-card {
+                padding: 24px 14px 20px;
+            }
+
+            .display-4 {
+                font-size: 2.1rem;
+            }
+
+            .display-5 {
+                font-size: 1.85rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% block content %}
+
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+     NAV  —  all Django URLs intact
+════════════════════════════════════════════════════════════════════════════ -->
+    <nav class="navbar navbar-expand-lg sticky-top custom-nav" aria-label="SmartCV primary navigation">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.png' %}" alt="SmartCV logo — AI-powered ATS resume builder" height="35"
+                    width="35">
+                <span class="fw-bold" style="color:#fff;">SmartCV</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-lg-3">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{% url 'about' %}">ABOUT US</a></li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url 'create_cv' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-file-plus me-1"></i>CREATE CV
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-grid me-1"></i>DASHBOARD
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-person-circle me-2"></i>LOGIN
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'signup' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-person-plus-fill me-2"></i>SIGNUP
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+     §1 · MISSION HERO  (dark full-bleed)
+     Purpose: Establish the brand purpose at the very top of the page.
+════════════════════════════════════════════════════════════════════════════ -->
+    <section class="mission-hero position-relative overflow-hidden">
+        <div class="mission-blob mission-blob-1" style="z-index:1;"></div>
+        <div class="mission-blob mission-blob-2" style="z-index:1;"></div>
+        <div class="mission-blob mission-blob-3" style="z-index:1;"></div>
+
+        <div class="container position-relative py-4" style="z-index:2;">
+            <div class="row justify-content-center">
+                <div class="col-lg-9 text-center">
+                    <span class="mission-eyebrow d-block mb-3">OUR PURPOSE</span>
+                    <h1 class="mission-headline mb-4">
+                        Bridging the gap between<br>
+                        <span class="mission-highlight">talent</span>
+                        <span class="mx-2" style="opacity:.4;">&amp;</span>
+                        <span class="mission-highlight">opportunity</span>
+                    </h1>
+                    <p class="mission-subtext mx-auto mb-5">
+                        Through driven insights and ATS intelligence, SmartCV transforms how
+                        students and graduates present themselves — turning academic excellence
+                        into recruiter-ready professional assets that get past the bots and onto
+                        the hiring manager's desk.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 justify-content-center">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'create_cv' %}"
+                            class="btn btn-royal btn-lg rounded-pill px-5 shadow-sm mission-cta">
+                            Build Your CV&nbsp;
+                            <i data-lucide="arrow-right" style="width:18px;height:18px;vertical-align:middle;"></i>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'login' %}"
+                            class="btn btn-royal btn-lg rounded-pill px-5 shadow-sm mission-cta">
+                            Build Your CV&nbsp;
+                            <i data-lucide="arrow-right" style="width:18px;height:18px;vertical-align:middle;"></i>
+                        </a>
+                        {% endif %}
+                        <a href="#problem-section" class="btn btn-outline-light btn-lg rounded-pill px-5">
+                            See How It Works
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impact stats -->
+            <div class="row g-3 justify-content-center mt-5 pt-2">
+                <div class="col-6 col-md-3">
+                    <div class="mission-stat-card text-center">
+                        <div class="mission-stat-number">98%</div>
+                        <div class="mission-stat-label">ATS Pass Rate</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="mission-stat-card text-center">
+                        <div class="mission-stat-number">10K+</div>
+                        <div class="mission-stat-label">CVs Optimised</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="mission-stat-card text-center">
+                        <div class="mission-stat-number">5x</div>
+                        <div class="mission-stat-label">Higher Callback Rate</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="mission-stat-card text-center">
+                        <div class="mission-stat-number">NLP</div>
+                        <div class="mission-stat-label">Powered Engine</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+     §2 · THE PROBLEM & SOLUTION  (off-white tint)
+     Purpose: Establish context — the pain, then the fix.
+════════════════════════════════════════════════════════════════════════════ -->
+    <section class="problem-solution-section py-5 overflow-hidden" id="problem-section">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <span class="eyebrow d-block mb-3">The Real Challenge</span>
+                <h2 class="display-5 fw-800 text-dark-navy">Why Most CVs Never Get Read</h2>
+                <p class="text-muted mt-3 col-lg-7 mx-auto" style="font-size:1.05rem;">
+                    75% of resumes are rejected by automated systems before a human ever sees them.
+                    Here is the problem — and exactly how SmartCV fixes it.
+                </p>
+            </div>
+
+            <div class="row g-4 align-items-stretch">
+
+                <!-- PROBLEM -->
+                <div class="col-lg-6">
+                    <div class="ps-card ps-problem">
+                        <div class="ps-card-header mb-4">
+                            <div class="ps-icon-wrap ps-icon-problem">
+                                <i data-lucide="alert-triangle" style="width:20px;height:20px;"></i>
+                            </div>
+                            <span class="ps-card-tag ps-tag-problem">THE STRUGGLE</span>
+                        </div>
+                        <h3 class="fw-800 text-dark-navy mb-4">The ATS Black Hole</h3>
+                        <div class="ps-point">
+                            <div class="ps-point-icon ps-point-icon-problem">
+                                <i data-lucide="x-circle" style="width:17px;height:17px;"></i>
+                            </div>
+                            <div>
+                                <strong>Invisible Keywords</strong>
+                                <p class="small text-muted mb-0 mt-1">Job descriptions contain exact terminology ATS
+                                    bots
+                                    scan for. Missing even a few critical words means instant rejection.</p>
+                            </div>
+                        </div>
+                        <div class="ps-point">
+                            <div class="ps-point-icon ps-point-icon-problem">
+                                <i data-lucide="x-circle" style="width:17px;height:17px;"></i>
+                            </div>
+                            <div>
+                                <strong>Complex Formatting</strong>
+                                <p class="small text-muted mb-0 mt-1">Tables, columns, and fancy designs break ATS
+                                    parsers
+                                    — turning your polished CV into unreadable noise.</p>
+                            </div>
+                        </div>
+                        <div class="ps-point">
+                            <div class="ps-point-icon ps-point-icon-problem">
+                                <i data-lucide="x-circle" style="width:17px;height:17px;"></i>
+                            </div>
+                            <div>
+                                <strong>Zero Feedback Loop</strong>
+                                <p class="small text-muted mb-0 mt-1">You apply, hear nothing, and never know why. Most
+                                    candidates repeat the same mistakes indefinitely.</p>
+                            </div>
+                        </div>
+                        <div class="ps-point">
+                            <div class="ps-point-icon ps-point-icon-problem">
+                                <i data-lucide="x-circle" style="width:17px;height:17px;"></i>
+                            </div>
+                            <div>
+                                <strong>Non-Standard Headings</strong>
+                                <p class="small text-muted mb-0 mt-1">Writing "Career History" instead of "Work
+                                    Experience" confuses automated parsers entirely.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SOLUTION -->
+                <div class="col-lg-6">
+                    <div class="ps-card ps-solution">
+                        <div class="ps-card-header mb-4">
+                            <div class="ps-icon-wrap ps-icon-solution">
+                                <i data-lucide="shield-check" style="width:20px;height:20px;"></i>
+                            </div>
+                            <span class="ps-card-tag ps-tag-solution">THE SMARTCV FIX</span>
+                        </div>
+                        <h3 class="fw-800 text-dark-navy mb-4">Intelligent Optimisation</h3>
+                        <div class="ps-point">
+                            <div class="ps-point-icon ps-point-icon-solution">
+                                <i data-lucide="check-circle-2" style="width:17px;height:17px;"></i>
+                            </div>
+                            <div>
+                                <strong>NLP Keyword Matching</strong>
+                                <p class="small text-muted mb-0 mt-1">Our NLP engine scans your profile against industry
+                                    skill databases to surface the exact keywords your CV is missing.</p>
+                            </div>
+                        </div>
+                        <div class="ps-point">
+                            <div class="ps-point-icon ps-point-icon-solution">
+                                <i data-lucide="check-circle-2" style="width:17px;height:17px;"></i>
+                            </div>
+                            <div>
+                                <strong>ATS-Safe Templates</strong>
+                                <p class="small text-muted mb-0 mt-1">All SmartCV templates are single-column,
+                                    plain-text-safe, and validated against the top 12 ATS systems.</p>
+                            </div>
+                        </div>
+                        <div class="ps-point">
+                            <div class="ps-point-icon ps-point-icon-solution">
+                                <i data-lucide="check-circle-2" style="width:17px;height:17px;"></i>
+                            </div>
+                            <div>
+                                <strong>Real-Time Score Feedback</strong>
+                                <p class="small text-muted mb-0 mt-1">Instant scoring as you build. Know exactly what to
+                                    fix before you submit to any role.</p>
+                            </div>
+                        </div>
+                        <div class="ps-point">
+                            <div class="ps-point-icon ps-point-icon-solution">
+                                <i data-lucide="check-circle-2" style="width:17px;height:17px;"></i>
+                            </div>
+                            <div>
+                                <strong>Industry-Standard Structure</strong>
+                                <p class="small text-muted mb-0 mt-1">Correct section headings, fonts, and hierarchy are
+                                    built in — so no parser ever misreads your profile.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+     §3 · STRATEGIC FOUNDATION  (dark — Mission & Vision)
+     Purpose: Deepen the brand story after the problem is established.
+════════════════════════════════════════════════════════════════════════════ -->
+    <section class="py-5 bg-primary-dark text-white position-relative overflow-hidden" id="foundation">
+        <div class="position-absolute top-0 start-0 translate-middle bg-info opacity-25 rounded-circle"
+            style="width:500px;height:500px;filter:blur(120px);z-index:0;"></div>
+
+        <div class="container position-relative py-5" style="z-index:1;">
+            <div class="text-center mb-5">
+                <span class="eyebrow eyebrow-light d-block mb-3">The Foundation</span>
+                <h2 class="display-5 fw-800 text-white">Our Strategic Foundation</h2>
+                <p class="text-muted-white mt-2 col-lg-6 mx-auto">
+                    Every feature we build flows from two guiding principles.
+                </p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-5">
+                    <div class="p-5 rounded-5 border border-white border-opacity-10 h-100 shadow-lg"
+                        style="background:rgba(255,255,255,0.03);backdrop-filter:blur(15px);">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="p-3 bg-info bg-opacity-10 rounded-4 me-3">
+                                <i data-lucide="target" class="text-info"></i>
+                            </div>
+                            <h3 class="fw-bold text-info mb-0">Our Mission</h3>
+                        </div>
+                        <p class="fs-5 lh-lg" style="opacity:.75;">
+                            To accelerate career entry via a data-driven optimisation platform
+                            that transforms raw technical skills into industry-ready profiles.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="p-5 rounded-5 border border-white border-opacity-10 h-100 shadow-lg"
+                        style="background:rgba(255,255,255,0.03);backdrop-filter:blur(15px);">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="p-3 bg-info bg-opacity-10 rounded-4 me-3">
+                                <i data-lucide="eye" class="text-info"></i>
+                            </div>
+                            <h3 class="fw-bold text-info mb-0">Our Vision</h3>
+                        </div>
+                        <p class="fs-5 lh-lg" style="opacity:.75;">
+                            To define the global benchmark for technical recruitment, ensuring
+                            every student turns academic potential into professional reality.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+     §4 · WHAT IS AN ATS SCORE?  (white)
+     Purpose: Educate the visitor on the core product mechanic.
+════════════════════════════════════════════════════════════════════════════ -->
+    <section class="py-5 overflow-hidden bg-white">
+        <div class="container py-3">
+            <div class="text-center mb-5">
+                <span class="eyebrow d-block mb-3">ATS Explained</span>
+                <h2 class="display-5 fw-800 text-dark-navy">What is an ATS Score?</h2>
+                <p class="text-muted mt-2 col-lg-6 mx-auto" style="font-size:1.05rem;">
+                    ATS scores are the invisible gatekeepers of modern hiring. Here is what they measure.
+                </p>
+            </div>
+
+            <div class="row align-items-center gx-5">
+                <div class="col-lg-6">
+                    <div class="p-4 bg-white shadow-sm rounded-5 border-start border-5"
+                        style="border-color:var(--primary-dark)!important;">
+                        <p class="text-secondary mb-4">
+                            Applicant Tracking Systems are the gatekeepers of the modern career world.
+                            An ATS Score represents how "readable" your professional profile is to an automated
+                            recruiter bot.
+                        </p>
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="badge bg-primary-dark rounded-circle p-2 me-3 flex-shrink-0"
+                                style="background-color:var(--primary-dark)!important;">
+                                <i data-lucide="cpu" class="text-white" style="width:18px;height:18px;"></i>
+                            </div>
+                            <div>
+                                <strong class="d-block mb-1">Keyword Density</strong>
+                                <p class="small text-muted mb-0">Measures how accurately your skills match specific job
+                                    requirements.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start mb-4">
+                            <div class="badge rounded-circle p-2 me-3 flex-shrink-0"
+                                style="background-color:var(--primary-dark)!important;">
+                                <i data-lucide="layout" class="text-white" style="width:18px;height:18px;"></i>
+                            </div>
+                            <div>
+                                <strong class="d-block mb-1">Parsing Health</strong>
+                                <p class="small text-muted mb-0">Ensures your resume structure doesn't "break" when
+                                    converted to plain text.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start">
+                            <div class="badge rounded-circle p-2 me-3 flex-shrink-0"
+                                style="background-color:var(--primary-dark)!important;">
+                                <i data-lucide="trending-up" class="text-white" style="width:18px;height:18px;"></i>
+                            </div>
+                            <div>
+                                <strong class="d-block mb-1">Passing Probability</strong>
+                                <p class="small text-muted mb-0">Our analyser simulates top-tier systems to predict your
+                                    success rate.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mt-5 mt-lg-0">
+                    <div class="p-4 rounded-5 shadow-sm border border-2"
+                        style="background:var(--bg-tint);border-color:var(--border-soft)!important;">
+                        <h5 class="fw-bold text-center mb-4 text-primary-dark">Understand Your Results</h5>
+                        <div
+                            class="d-flex align-items-center p-3 mb-3 bg-white rounded-4 shadow-sm border-end border-success border-5">
+                            <div class="display-6 fw-800 text-success me-3">80%</div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Interview Ready</h6>
+                                <small class="text-muted">High probability of passing the initial bot screen.</small>
+                            </div>
+                        </div>
+                        <div
+                            class="d-flex align-items-center p-3 mb-3 bg-white rounded-4 shadow-sm border-end border-warning border-5">
+                            <div class="display-6 fw-800 text-warning me-3">60%</div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Needs Optimisation</h6>
+                                <small class="text-muted">A 50/50 chance. Some keywords or formatting are
+                                    missing.</small>
+                            </div>
+                        </div>
+                        <div
+                            class="d-flex align-items-center p-3 bg-white rounded-4 shadow-sm border-end border-danger border-5">
+                            <div class="display-6 fw-800 text-danger me-3">40%</div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Critical Issues</h6>
+                                <small class="text-muted">Major formatting or skill gaps found. Immediate fixes
+                                    needed.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+     §5 · CORE VALUES  (dark glassmorphism)
+     Purpose: Define brand character after the product mechanic is clear.
+════════════════════════════════════════════════════════════════════════════ -->
+    <section class="py-5 bg-primary-dark text-white overflow-hidden position-relative">
+        <div class="cv-bg-dots"></div>
+
+        <div class="container py-4 position-relative" style="z-index:2;">
+            <div class="text-center mb-5">
+                <span class="eyebrow eyebrow-light d-block mb-3">What Drives Us</span>
+                <h2 class="display-5 fw-800 text-white">Our Core Values</h2>
+                <p class="text-muted-white mt-2 col-lg-6 mx-auto">
+                    Three principles guide every design decision, every feature, and every line of code we ship.
+                </p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="value-card">
+                        <div class="value-card-num">01</div>
+                        <div class="value-card-icon mb-4">
+                            <i data-lucide="crosshair" style="width:26px;height:26px;"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-3">Precision</h4>
+                        <p class="text-muted-white small mb-4 lh-lg">
+                            Every keyword recommendation, every score, every template decision is grounded in data.
+                            We don't guess — we measure, analyse, and validate against real-world ATS systems.
+                        </p>
+                        <div class="value-tags">
+                            <span class="value-tag">Data-Driven</span>
+                            <span class="value-tag">Validated</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="value-card value-card--featured">
+                        <div class="value-card-num">02</div>
+                        <div class="value-card-icon value-card-icon--featured mb-4">
+                            <i data-lucide="users" style="width:26px;height:26px;"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-3">Accessibility</h4>
+                        <p class="text-muted-white small mb-4 lh-lg">
+                            Career tools should not be gatekept behind paywalls or complexity. SmartCV is built
+                            for every student, regardless of background, institution, or prior experience.
+                        </p>
+                        <div class="value-tags">
+                            <span class="value-tag">Inclusive</span>
+                            <span class="value-tag">Student-First</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="value-card">
+                        <div class="value-card-num">03</div>
+                        <div class="value-card-icon mb-4">
+                            <i data-lucide="zap" style="width:26px;height:26px;"></i>
+                        </div>
+                        <h4 class="fw-bold text-white mb-3">Modernity</h4>
+                        <p class="text-muted-white small mb-4 lh-lg">
+                            Recruitment evolves faster than ever. We stay ahead of ATS algorithm changes,
+                            industry hiring trends, and UI best practices so your CV never feels outdated.
+                        </p>
+                        <div class="value-tags">
+                            <span class="value-tag">Future-Ready</span>
+                            <span class="value-tag">Always Updated</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+     §7 · 5 STEPS TO A PERFECT ATS SCORE  (dark horizontal)
+     Purpose: Give the visitor an actionable takeaway.
+════════════════════════════════════════════════════════════════════════════ -->
+    <section class="py-5 bg-primary-dark text-white overflow-hidden">
+        <div class="container py-5">
+            <div class="text-center mb-5 pb-2">
+                <span class="eyebrow eyebrow-light d-block mb-3">The Checklist</span>
+                <h2 class="display-5 fw-800 text-white">5 Steps to a Perfect ATS Score</h2>
+                <p class="text-muted-white mt-2 col-lg-6 mx-auto">
+                    Follow these five principles every time you apply and never get silently rejected again.
+                </p>
+            </div>
+
+            <div class="position-relative">
+                <div class="workflow-line-horizontal d-none d-lg-block"></div>
+                <div class="row g-4 justify-content-center">
+
+                    <div class="col-lg col-md-6 text-center position-relative">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="icon-circle-step mb-4"><span class="step-huge-number">01</span></div>
+                            <h5 class="fw-bold text-steel-blue">Keyword Alignment</h5>
+                            <p class="small text-muted-white">Mirror terminology from the job description.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg col-md-6 text-center position-relative">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="icon-circle-step mb-4"><span class="step-huge-number">02</span></div>
+                            <h5 class="fw-bold text-steel-blue">Clean Formatting</h5>
+                            <p class="small text-muted-white">Use a machine-readable single-column layout.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg col-md-6 text-center position-relative">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="icon-circle-step mb-4"><span class="step-huge-number">03</span></div>
+                            <h5 class="fw-bold text-steel-blue">Standard Headings</h5>
+                            <p class="small text-muted-white">Stick to "Work Experience" and "Education."</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg col-md-6 text-center position-relative">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="icon-circle-step mb-4"><span class="step-huge-number">04</span></div>
+                            <h5 class="fw-bold text-steel-blue">Quantified Impact</h5>
+                            <p class="small text-muted-white">Use metrics to show proof of performance.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg col-md-6 text-center position-relative">
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="icon-circle-step mb-4"><span class="step-huge-number">05</span></div>
+                            <h5 class="fw-bold text-steel-blue">Hard Skill Focus</h5>
+                            <p class="small text-muted-white">Prioritise technical tools and certifications.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+     §8 · OUR PROCESS  (white vertical workflow)
+     Purpose: Show the technical implementation as a closing deep-dive.
+════════════════════════════════════════════════════════════════════════════ -->
+    <section class="process-section py-5 bg-white">
+        <div class="container py-5">
+            <div class="row align-items-center">
+
+                <div class="col-lg-5 mb-5 mb-lg-0">
+                    <span class="eyebrow d-block mb-3 text-center">Our Process</span>
+                    <h2 class="display-4 fw-800 text-dark-navy mb-4" style="line-height:1.15;">
+                        Smart Engineering for
+                        <span class="text-royal-blue">Better Careers.</span>
+                    </h2>
+                    <p class="lead text-muted mb-4">
+                        We don't just format; we optimise. Our 3-step technical workflow is designed to bridge
+                        the gap between your skills and the recruiter's desk.
+                    </p>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'create_cv' %}" class="btn btn-royal btn-lg rounded-pill px-5 shadow-sm">
+                        Start Building&nbsp;
+                        <i data-lucide="arrow-up-right" style="width:18px;height:18px;vertical-align:middle;"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-royal btn-lg rounded-pill px-5 shadow-sm">
+                        Build Your CV&nbsp;
+                        <i data-lucide="arrow-right" style="width:18px;height:18px;vertical-align:middle;"></i>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-6 offset-lg-1 position-relative">
+                    <div class="workflow-line border-start border-2 border-light"></div>
+
+                    <div class="workflow-item d-flex mb-5 align-items-center">
+                        <div class="icon-container me-4">
+                            <div
+                                class="circle-box bg-white border border-2 shadow-sm d-flex align-items-center justify-content-center">
+                                <i data-lucide="scan-text" class="text-royal-blue"></i>
+                                <span class="step-badge rounded-circle border border-white">1.</span>
+                            </div>
+                        </div>
+                        <div class="workflow-text">
+                            <h4 class="fw-bold text-dark-navy mb-1">ATS Semantic Analysis</h4>
+                            <p class="text-muted small mb-0">Utilising specialised algorithms for faster,
+                                on-the-spot keyword identification.</p>
+                        </div>
+                    </div>
+
+                    <div class="workflow-item d-flex mb-5 align-items-center">
+                        <div class="icon-container me-4">
+                            <div
+                                class="circle-box bg-white border border-2 shadow-sm d-flex align-items-center justify-content-center">
+                                <i data-lucide="layers" class="text-royal-blue"></i>
+                                <span class="step-badge rounded-circle border border-white">2.</span>
+                            </div>
+                        </div>
+                        <div class="workflow-text">
+                            <h4 class="fw-bold text-dark-navy mb-1">Structural Optimisation</h4>
+                            <p class="text-muted small mb-0">Single-column conversion removes fine formatting
+                                errors that standard bots miss.</p>
+                        </div>
+                    </div>
+
+                    <div class="workflow-item d-flex align-items-center">
+                        <div class="icon-container me-4">
+                            <div
+                                class="circle-box bg-white border border-2 shadow-sm d-flex align-items-center justify-content-center">
+                                <i data-lucide="check-circle" class="text-royal-blue"></i>
+                                <span class="step-badge rounded-circle border border-white">3.</span>
+                            </div>
+                        </div>
+                        <div class="workflow-text">
+                            <h4 class="fw-bold text-dark-navy mb-1">Industry Readiness</h4>
+                            <p class="text-muted small mb-0">Final deployment including professional ATS-friendly
+                                headers and quantified metrics.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+     FOOTER  —  all Django URLs intact
+════════════════════════════════════════════════════════════════════════════ -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <div class="footer-brand mb-4 d-flex align-items-center gap-2">
+                        <img src="{% static 'images/logo.png' %}" alt="SmartCV — AI-powered ATS resume builder"
+                            height="35" width="35">
+                        <span class="h5 fw-bold mb-0">SmartCV</span>
+                    </div>
+                    <p class="text-muted-custom mb-4">
+                        Bridge the gap between talent and technology. Our mission is to transform
+                        standard resumes into high-impact professional assets through
+                        intelligent, ATS-optimised design.
+                    </p>
+                    <div class="social-links d-flex gap-3">
+                        <a href="#" aria-label="Email SmartCV"><i class="bi bi-envelope"></i></a>
+                        <a href="#" aria-label="SmartCV on LinkedIn"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" aria-label="SmartCV on GitHub"><i class="bi bi-github"></i></a>
+                        <a href="#" aria-label="SmartCV on Twitter/X"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" aria-label="SmartCV on Instagram"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <h6 class="fw-bold text-white mb-4">CORE FEATURES</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{% url 'signup' %}">Secure Auth &amp; Registration</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'create_cv' %}">Dynamic CV Builder</a></li>
+                        <li><a href="{% url 'dashboard' %}">Premium Templates</a></li>
+                        <li><a href="{% url 'dashboard' %}">Real-time ATS Scoring</a></li>
+                        <li><a href="{% url 'dashboard' %}">Style &amp; Font Management</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}">Dynamic CV Builder</a></li>
+                        <li><a href="{% url 'login' %}">Premium Templates</a></li>
+                        <li><a href="{% url 'login' %}">Real-time ATS Scoring</a></li>
+                        <li><a href="{% url 'login' %}">Style &amp; Font Management</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <h6 class="fw-bold text-white mb-4">QUICK LINKS</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{% url 'home' %}">HOME</a></li>
+                        <li><a href="{% url 'about' %}">ABOUT US</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'create_cv' %}">CREATE CV</a></li>
+                        <li><a href="{% url 'dashboard' %}">DASHBOARD</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}">CREATE CV</a></li>
+                        <li><a href="{% url 'login' %}">DASHBOARD</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'login' %}">LOGIN</a></li>
+                        <li><a href="{% url 'signup' %}">SIGN UP</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr class="mt-5 border-secondary">
+            <div class="text-center text-muted-custom py-3 small">
+                &copy; 2026 SmartCV Builder Project. Designed for BCA Final Year Submission.
+            </div>
+        </div>
+    </footer>
+
+
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof lucide !== "undefined") lucide.createIcons();
+        });
+    </script>
+
+</body>
+
+</html>

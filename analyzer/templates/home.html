@@ -1,0 +1,1047 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCV | Home Page </title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Lucide Icons CDN for Premium Look -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ===== PREMIUM ENHANCEMENTS ===== */
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Hero Section Enhancements */
+        .hero-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 100px 0 120px;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--royal-blue);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            line-height: 1.7;
+            color: var(--slate-grey);
+            margin-bottom: 40px;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: var(--primary-dark);
+            color: white;
+            padding: 60px 0;
+            margin-top: -60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--royal-blue);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        /* Enhanced Feature Cards */
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 32px;
+            height: 100%;
+            border: 1px solid #f1f5f9;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--royal-blue), #60a5fa);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(27, 38, 59, 0.12);
+            border-color: var(--royal-blue);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            background: var(--royal-blue);
+            transform: scale(1.1);
+        }
+
+        .feature-card:hover .feature-icon svg {
+            color: white !important;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+        }
+
+        .feature-description {
+            color: var(--slate-grey);
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f8f9fa 100%);
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .step-card {
+            position: relative;
+            background: white;
+            border-radius: 24px;
+            padding: 48px 40px;
+            text-align: center;
+            border: 2px solid #f1f5f9;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .step-card:hover {
+            border-color: var(--royal-blue);
+            box-shadow: 0 15px 40px rgba(27, 38, 59, 0.08);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--royal-blue), #3b82f6);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.25rem;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(37, 99, 235, 0.08);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+
+        .step-description {
+            color: var(--slate-grey);
+            line-height: 1.7;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #2d3a54 100%);
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-title {
+            font-size: 2.75rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .cta-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--royal-blue);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 2.75rem;
+            font-weight: 900;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--slate-grey);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Button Enhancements */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--royal-blue), #3b82f6);
+            border: none;
+            padding: 14px 32px;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4);
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 14px 32px;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background: white;
+            color: var(--primary-dark);
+            border-color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-lg {
+            padding: 16px 40px;
+            font-size: 1.125rem;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 991px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cta-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 60px 0 80px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.125rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .cta-title {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <style>
+        /* ==========================================================================
+    PROJECT: SmartCV - Home Page Styles
+    ========================================================================== */
+
+        /* --- 01. GLOBAL VARIABLES & RESET --- */
+        :root {
+            /* Color Palette */
+            --primary-dark: #1B263B;
+            /* Deep Navy */
+            --primary-slate: #415A77;
+            /* Slate Blue */
+            --royal-blue: #2563eb;
+            /* Professional Royal Blue */
+            --dark-navy: #1e293b;
+            /* Text/Heading Navy */
+            --slate-grey: #64748b;
+            /* Muted Grey */
+            --bg-light: #F8F9FA;
+            /* Off-White Body */
+            --white: #FFFFFF;
+
+            /* Action Colors */
+            --action-coral: #ff7e67;
+            --action-blue: #1a80f0;
+            --steel-blue: #a1b1cc;
+            --border-soft: #f1f5f9;
+
+            /* Shadows */
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 25px rgba(27, 38, 59, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--primary-dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- 02. HELPER TYPOGRAPHY --- */
+        .fw-800 {
+            font-weight: 800;
+        }
+
+        .fw-700 {
+            font-weight: 700;
+        }
+
+        .fw-600 {
+            font-weight: 600;
+        }
+
+        .text-primary-dark {
+            color: var(--primary-dark);
+        }
+
+        .text-royal-blue {
+            color: var(--royal-blue);
+        }
+
+        .text-dark-navy {
+            color: var(--dark-navy);
+        }
+
+        .text-slate {
+            color: var(--slate-grey);
+        }
+
+        .text-steel-blue {
+            color: var(--steel-blue);
+        }
+
+        .text-muted-custom {
+            color: #b8b2c7;
+        }
+
+        .text-muted-white {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* --- 07. FOOTER --- */
+        .site-footer {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 70px 10% 30px;
+        }
+
+        .footer-links a {
+            color: #b8b2c7;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        /* --- 08. MEDIA QUERIES --- */
+        @media (max-width: 991px) {
+            .workflow-line-horizontal {
+                display: none;
+            }
+
+            .hero {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .display-4 {
+                font-size: 2.2rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* ================================================================
+   09. NAVIGATION BAR (STRICT DESIGN)
+   ================================================================*/
+        .custom-nav {
+            background-color: var(--primary-dark) !important;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-nav .navbar-brand span {
+            color: var(--white) !important;
+        }
+
+        .custom-nav .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: 0.3s ease;
+        }
+
+        .custom-nav .nav-link:hover,
+        .custom-nav .nav-link.active {
+            color: var(--white) !important;
+        }
+
+        .navbar-toggler {
+            filter: invert(1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* --- 10. BUTTON STYLES (Used in Nav) --- */
+        .btn-outline-primary {
+            background-color: var(--royal-blue) !important;
+            color: var(--white) !important;
+            border: 2px solid var(--royal-blue) !important;
+            font-weight: 700 !important;
+            border-radius: 8px !important;
+            padding: 10px 25px !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #1d4ed8 !important;
+            border-color: #1d4ed8 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-royal {
+            background-color: var(--royal-blue);
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+            padding: 10px 25px;
+            border-radius: 8px;
+        }
+
+        .btn-royal:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        /* --- 07. FOOTER STYLES --- */
+        .site-footer {
+            background-color: #1B263B;
+            /* Your primary-dark color */
+            color: #FFFFFF;
+            padding: 70px 10% 30px;
+            margin-top: 50px;
+        }
+
+        .text-muted-custom {
+            color: #b8b2c7;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #b8b2c7;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: #FFFFFF;
+            transform: translateX(5px);
+        }
+
+        .social-links a {
+            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.1);
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #2563eb;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+
+{% block content %}
+
+<body>
+
+    <!-- ===== NAVIGATION BAR ===== -->
+    <nav class="navbar navbar-expand-lg sticky-top custom-nav">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" height="35">
+                <span class="fw-bold text-primary-dark">SmartCV</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-lg-3">
+                    <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link " href="{% url 'about' %}">ABOUT US</a></li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url 'create_cv' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-file-plus me-1"></i>CREATE CV
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-grid me-1"></i>DASHBOARD
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-person-circle me-2"></i>LOGIN
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'signup' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-person-plus-fill me-2"></i>SIGNUP
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== PREMIUM HERO SECTION ===== -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <!-- Badge -->
+                    <div class="hero-badge fade-in-up">
+                        <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+                        <span>Resume Builder</span>
+                    </div>
+
+                    <!-- Main Headline -->
+                    <h1 class="hero-title fade-in-up">
+                        Build a Resume that <br>
+                        <span class="text-primary">Beats the Bots.</span>
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="hero-subtitle fade-in-up">
+                        Stop getting rejected by automated systems. SmartCV analyzes your resume against real job
+                        titles,
+                        spots keyword gaps, and formats your CV perfectly for ATS systems.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="d-flex justify-content-center gap-3 flex-wrap fade-in-up">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg shadow-sm px-5">
+                            <i data-lucide="layout-dashboard" style="width: 20px; height: 20px; margin-right: 8px;"></i>
+                            Go to Dashboard
+                        </a>
+                        {% else %}
+                        <a href="{% url 'signup' %}" class="btn btn-primary btn-lg shadow-sm px-5">
+                            <i data-lucide="rocket" style="width: 20px; height: 20px; margin-right: 8px;"></i>
+                            Create Free Resume
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg px-5">
+                            <i data-lucide="log-in" style="width: 20px; height: 20px; margin-right: 8px;"></i>
+                            Login
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== STATS SECTION ===== -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-6 mb-4 mb-md-0">
+                    <div class="stat-item">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">Professional Templates</span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 mb-4 mb-md-0">
+                    <div class="stat-item">
+                        <span class="stat-number">95%</span>
+                        <span class="stat-label">ATS Pass Rate</span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="stat-item">
+                        <span class="stat-number">5min</span>
+                        <span class="stat-label">Average Build Time</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES SECTION ===== -->
+    <section class="py-5 my-5">
+        <div class="container">
+            <!-- Section Header -->
+            <div class="section-header">
+                <span class="section-badge">FEATURES</span>
+                <h2 class="section-title">Why Choose SmartCV?</h2>
+                <p class="section-subtitle">
+                    Designed for the modern job hunt. Our platform combines intelligent analysis
+                    with beautiful design to help you stand out.
+                </p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="row g-4">
+                <!-- Feature 1: ATS Scoring -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i data-lucide="cpu" style="width: 32px; height: 32px; color: var(--royal-blue);"></i>
+                        </div>
+                        <h4 class="feature-title">ATS Scoring Engine</h4>
+                        <p class="feature-description">
+                            We analyze your resume against your target job title to ensure your keywords
+                            pass the Applicant Tracking Systems used by 99% of Fortune 500 companies.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 2: AI Suggestions -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i data-lucide="sparkles" style="width: 32px; height: 32px; color: var(--royal-blue);"></i>
+                        </div>
+                        <h4 class="feature-title">Smart Suggestions</h4>
+                        <p class="feature-description">
+                            Receive expert suggestions to boost your ATS score, featuring
+                            strategic keyword integration and impact statement enhancement.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 3: Premium Templates -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i data-lucide="palette" style="width: 32px; height: 32px; color: var(--royal-blue);"></i>
+                        </div>
+                        <h4 class="feature-title">Premium Templates</h4>
+                        <p class="feature-description">
+                            Choose from 10+ professionally designed templates. Customize fonts, colors,
+                            and layouts with a single click to match your personal brand.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 4: Real-Time Preview -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i data-lucide="eye" style="width: 32px; height: 32px; color: var(--royal-blue);"></i>
+                        </div>
+                        <h4 class="feature-title">Real-Time Preview</h4>
+                        <p class="feature-description">
+                            See your resume update instantly as you type. No more guessing what
+                            your final document will look like.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 5: One-Click Export -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i data-lucide="download" style="width: 32px; height: 32px; color: var(--royal-blue);"></i>
+                        </div>
+                        <h4 class="feature-title">Instant Export</h4>
+                        <p class="feature-description">
+                            Generate a pixel-perfect PDF of your resume instantly. Or copy the
+                            text to your clipboard for quick online applications.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 6: Version Control -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i data-lucide="git-branch"
+                                style="width: 32px; height: 32px; color: var(--royal-blue);"></i>
+                        </div>
+                        <h4 class="feature-title">Version Management</h4>
+                        <p class="feature-description">
+                            Save multiple versions of your resume for different job applications.
+                            Easy to manage and update whenever needed.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== HOW IT WORKS SECTION ===== -->
+    <section class="how-it-works">
+        <div class="container">
+            <!-- Section Header -->
+            <div class="section-header">
+                <span class="section-badge">PROCESS</span>
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">
+                    Build your professional resume in three simple steps.
+                    No design skills required.
+                </p>
+            </div>
+
+            <!-- Steps Grid -->
+            <div class="row g-4">
+                <!-- Step 1 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <i data-lucide="file-text" style="width: 40px; height: 40px; color: var(--royal-blue);"></i>
+                        </div>
+                        <h3 class="step-title">Fill Your Details</h3>
+                        <p class="step-description">
+                            Enter your work experience, education, skills, and achievements.
+                            Our smart form guides you through each section with helpful tips.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <i data-lucide="layout-template"
+                                style="width: 40px; height: 40px; color: var(--royal-blue);"></i>
+                        </div>
+                        <h3 class="step-title">Choose Template</h3>
+                        <p class="step-description">
+                            Select from our collection of ATS-friendly templates. Customize colors
+                            and fonts to match your style with instant preview.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <i data-lucide="download-cloud"
+                                style="width: 40px; height: 40px; color: var(--royal-blue);"></i>
+                        </div>
+                        <h3 class="step-title">Download PDF</h3>
+                        <p class="step-description">
+                            Get your ATS score, review suggestions, and download your perfectly
+                            formatted resume as a professional PDF ready for applications.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FINAL CTA SECTION ===== -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 cta-content text-center">
+                    <h2 class="cta-title">
+                        Ready to Build Your<br>
+                        Professional Resume?
+                    </h2>
+                    <p class="cta-subtitle">
+                        Join thousands of job seekers who have landed their dream jobs using <strong>SmartCV's
+                            professional resume builder</strong>.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-5">
+                            Go to Dashboard
+                        </a>
+                        {% else %}
+                        <a href="{% url 'signup' %}" class="btn btn-primary btn-lg px-5">
+                            Get Started Free
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg px-5">
+                            Login
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <div class="footer-brand mb-4 d-flex align-items-center gap-2">
+                        <img src="{% static 'images/logo.png' %}" alt="Logo" height="35">
+                        <span class="h5 fw-bold mb-0">SmartCV</span>
+                    </div>
+                    <p class="text-muted-custom mb-4">
+                        Bridge the gap between talent and technology. Our mission is to transform
+                        standard resumes into high-impact professional assets through
+                        intelligent, ATS-optimized design.
+                    </p>
+                    <div class="social-links d-flex gap-3">
+                        <a href="#"><i class="bi bi-envelope"></i></a>
+                        <a href="#"><i class="bi bi-linkedin"></i></a>
+                        <a href="#"><i class="bi bi-github"></i></a>
+                        <a href="#"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <h6 class="fw-bold text-white mb-4">CORE FEATURES</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{% url 'signup' %}">Secure Auth & Registration</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'create_cv' %}">Dynamic CV Builder</a></li>
+                        <li><a href="{% url 'dashboard' %}">Premium Templates</a></li>
+                        <li><a href="{% url 'dashboard' %}">Real-time ATS Scoring</a></li>
+                        <li><a href="{% url 'dashboard' %}">Style & Font Management</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}">Dynamic CV Builder</a></li>
+                        <li><a href="{% url 'login' %}">Premium Templates</a></li>
+                        <li><a href="{% url 'login' %}">Real-time ATS Scoring</a></li>
+                        <li><a href="{% url 'login' %}">Style & Font Management</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <h6 class="fw-bold text-white mb-4">QUICK LINKS</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{% url 'home' %}">HOME</a></li>
+                        <li><a href="{% url 'about' %}">ABOUT US</a></li>
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'create_cv' %}">CREATE CV</a></li>
+                        <li><a href="{% url 'dashboard' %}">DASHBOARD</a></li>
+                        {% else %}
+                        <li><a href="{% url 'login' %}">CREATE CV</a></li>
+                        <li><a href="{% url 'login' %}">DASHBOARD</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'login' %}">LOGIN</a></li>
+                        <li><a href="{% url 'signup' %}">SIGN UP</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-5 border-secondary">
+            <div class="text-center text-muted-custom py-3 small">
+                &copy; 2026 Smart CV Builder Project. Designed for BCA Final Year Submission.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+</body>
+{% endblock %}
+
+</html>

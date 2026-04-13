@@ -1,0 +1,410 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCV | Dashboard</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom Dashboard CSS -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════════════════════════
+     MOBILE TOGGLE BUTTON
+     ══════════════════════════════════════════════════════════ -->
+
+    <button id="mobileToggle" class="btn btn-primary shadow-sm align-items-center justify-content-center"
+        aria-label="Toggle Sidebar">
+        <i id="toggleIcon" class="bi bi-list fs-4"></i>
+    </button>
+
+    <!-- ══════════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+     ══════════════════════════════════════════════════════════ -->
+    <div class="sidebar" id="sidebar">
+        <!-- Brand/Logo Section -->
+        <div class="sidebar-brand mb-4">
+            <i class="bi bi-file-earmark-text-fill sidebar-logo-icon me-2"></i> SmartCV
+        </div>
+
+        <!-- Navigation Menu Section -->
+        <span class="nav-section-label">Navigation</span>
+        <div class="nav-menu">
+            <p>
+                <a href="{% url 'dashboard' %}" class="active">
+                    <i class="bi bi-grid-1x2-fill me-3"></i> Dashboard
+                </a>
+            </p>
+            <p>
+                <a href="{% url 'create_cv' %}">
+                    <i class="bi bi-file-earmark-plus me-3"></i> Create CV
+                </a>
+            </p>
+            <p>
+                <a href="{% url 'home' %}">
+                    <i class="bi bi-house me-3"></i> Home Page
+                </a>
+            </p>
+        </div>
+
+        <!-- Account Section -->
+        <hr class="sidebar-divider mt-3">
+        <span class="nav-section-label">Account</span>
+        <div class="nav-menu">
+            <!-- User Account Button - Opens Profile Modal -->
+            <p>
+                <a href="" id="userProfileBtn" class="user-profile-link">
+                    <i class="bi bi-person-circle me-3"></i> {{ profile.full_name|default:user.username }}
+                </a>
+            </p>
+            <!-- Logout Button -->
+            <p>
+                <a href="{% url 'logout' %}" class="text-danger">
+                    <i class="bi bi-box-arrow-right me-3"></i> Logout
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+     MAIN CONTENT AREA
+     Contains all dashboard content: stats, tables, etc.
+     ══════════════════════════════════════════════════════════ -->
+    <div class="main-area" id="mainArea">
+
+        <!-- Welcome Banner with CTA -->
+        <div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="fw-bold">👋 Welcome back, {{ user.get_full_name|default:user.username }}!</h1>
+                <p>Manage your resumes and track your ATS performance.</p>
+            </div>
+            <a href="{% url 'create_cv' %}" class="btn btn-sm px-3 py-2 fw-bold ms-2"
+                style="background:#f0eeee;color:#1e40af;border-radius:8px;">
+                <i class="bi bi-file-plus me-1"></i>CREATE NEW CV
+            </a>
+        </div>
+
+        <!-- ══ STATS GRID ══ -->
+        <div class="stats-grid mb-4">
+            <!-- Total Resumes Card -->
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label mb-2">Total Resumes</div>
+                        <div class="stat-value text-dark">{{ total_cvs }}</div>
+                    </div>
+                    <div class="stat-icon" style="background:#eff6ff;">
+                        <i class="bi bi-files text-primary"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Average ATS Score Card -->
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label mb-2">Average ATS Score</div>
+                        <div
+                            class="stat-value {% if avg_score >= 70 %}text-success{% elif avg_score >= 40 %}text-warning{% else %}text-danger{% endif %}">
+                            {{ avg_score }}%
+                        </div>
+                    </div>
+                    <div class="stat-icon" style="background:#f0fdf4;">
+                        <i class="bi bi-graph-up-arrow text-success"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Plan Card -->
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="stat-label mb-2">Current Plan</div>
+                        <div class="stat-value" style="font-size:1.5rem; color:#f59e0b;">Free</div>
+                    </div>
+                    <div class="stat-icon" style="background:#fffbeb;">
+                        <i class="bi bi-star-fill text-warning"></i>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <span class="badge" style="background:#fef9c3; color:#92400e; font-size:0.7rem; padding:4px 8px;">
+                        Upgrade for unlimited CVs
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ RESUMES TABLE SECTION ══ -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold mb-0">Your Resumes</h4>
+            {% if total_cvs > 0 %}
+            <span class="badge bg-primary rounded-pill">{{ total_cvs }} total</span>
+            {% endif %}
+        </div>
+
+        <div class="table-container">
+            {% if cvs %}
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <!-- Replace the entire <thead> block in dashboard.html with this -->
+                    <thead>
+                        <tr>
+                            <th class="text-center">Date Created</th>
+                            <th class="text-center">Resume Title</th>
+                            <th class="text-center">ATS Score</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Replace the entire <tr>...</tr> block in dashboard.html with this -->
+                        {% for cv in cvs %}
+                        <tr>
+                            <!-- Date Created -->
+                            
+
+                            <!-- In dashboard.html: Replace ONLY the Date Created <td> cell inside with this -->
+
+                            
+
+                            <td class="text-center">
+                                {% if cv.updated_at and cv.updated_at|date:"Y-m-d H:i:s" != cv.created_at|date:"Y-m-d H:i:s" %}
+                                <div class="fw-medium">{{ cv.updated_at|date:"d M Y" }}</div>
+                                <div class="text-muted" style="font-size:0.75rem;">
+                                    {{ cv.updated_at|time:"h:i A" }}
+                                    <span class="badge ms-1"
+                                        style="background:#f0f9ff; color:#0369a1; font-size:0.6rem; font-weight:600; padding:2px 6px; border-radius:6px;">edited</span>
+                                </div>
+                                {% else %}
+                                <div class="fw-medium">{{ cv.created_at|date:"d M Y" }}</div>
+                                <div class="text-muted" style="font-size:0.75rem;">
+                                    {{ cv.created_at|time:"h:i A" }}
+                                    <span class="badge ms-1"
+                                        style="background:#f0f9ff; color:#0369a1; font-size:0.6rem; font-weight:600; padding:2px 6px; border-radius:6px;">new</span>
+                                </div>
+                                {% endif %}
+                            </td>
+
+
+
+                            <!-- Error 3 Fix: Full Name + Target Job Title -->
+                            <td class="text-center">
+                                {% with pd=cv.personal_details %}
+                                <div class="fw-semibold text-dark">
+                                    {% if pd.full_name %}{{ pd.full_name }}{% else %}{{
+                                    user.get_full_name|default:user.username }}{% endif %}
+                                </div>
+                                {% endwith %}
+                                {% if cv.job_title_target %}
+                                <div class="text-muted" style="font-size:0.77rem;">
+                                    <i class="bi bi-briefcase me-1"></i>{{ cv.job_title_target }}
+                                </div>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">
+                                <div class="ats-badge 
+                                    {% if cv.ats_score >= 70 %}text-success
+                                    {% elif cv.ats_score >= 40 %}text-warning
+                                    {% else %}text-danger
+                                    {% endif %}" style="font-size:1.00rem;">
+                                    {{ cv.ats_score }}%
+                                </div>
+                            </td>
+
+                            <!-- Error 2 Fix: Only Edit (blue) and Delete (red) buttons remain -->
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{% url 'edit_cv' cv.id %}"
+                                        class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1"
+                                        title="Edit Resume">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                    <button type="button"
+                                        class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1 delete-cv-btn"
+                                        data-cv-id="{{ cv.id }}" data-cv-title="{{ cv.title }}" title="Delete Resume">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <!-- Empty State - No Resumes -->
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-file-earmark-text"></i></div>
+                <h5 class="fw-bold text-dark">No resumes yet</h5>
+                <p class="text-muted mb-4">Create your first professional resume in minutes.</p>
+                <a href="{% url 'create_cv' %}" class="btn btn-primary px-5 py-2 fw-semibold">
+                    <i class="bi bi-file-plus me-2"></i> Build My First CV
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+    </div><!-- end main-area -->
+
+    <div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+
+                <div class="modal-header border-0 pb-0 flex-column align-items-center position-relative"
+                    style="background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%); padding: 40px 20px;">
+                    <button type="button" class="btn-close btn-close-white position-absolute"
+                        style="top: 20px; right: 20px;" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                    <div class="position-relative">
+                        {% if user.profile.profile_picture %}
+                        <img src="{{ user.profile.profile_picture.url }}" alt="Profile"
+                            class="rounded-circle border border-4 border-white shadow"
+                            style="width: 110px; height: 110px; object-fit: cover; background: #fff;">
+                        {% else %}
+                        <div class="rounded-circle bg-white d-flex align-items-center justify-content-center shadow"
+                            style="width: 110px; height: 110px;">
+                            <i class="bi bi-person-fill text-primary" style="font-size: 3.5rem;"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <h4 class="text-white fw-bold mt-3 mb-0">{{ profile.full_name|default:user.get_full_name }}</h4>
+                    <p class="text-white-50 small">@{{ user.username }}</p>
+                </div>
+
+                <div class="modal-body px-4 py-4" style="background: #f8fafc;">
+                    <div class="user-info-grid">
+
+                        <h6 class="text-uppercase text-muted fw-bold mb-3"
+                            style="font-size: 0.75rem; letter-spacing: 1px;">Contact Information</h6>
+                        <div class="bg-white p-3 rounded-3 shadow-sm mb-4 border border-light">
+                            <div class="mb-3">
+                                <label class="text-muted small fw-medium mb-1"><i
+                                        class="bi bi-envelope me-2 text-primary"></i>Email Address</label>
+                                <div class="fw-semibold text-dark">{{ user.email }}</div>
+                            </div>
+                            <div class="mb-0">
+                                <label class="text-muted small fw-medium mb-1"><i
+                                        class="bi bi-telephone me-2 text-primary"></i>Phone Number</label>
+                                <div class="fw-semibold text-dark">{{ profile.phone_no|default:"Not Provided" }}</div>
+                            </div>
+                        </div>
+
+                        <h6 class="text-uppercase text-muted fw-bold mb-3"
+                            style="font-size: 0.75rem; letter-spacing: 1px;">Personal Details</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-6">
+                                <div class="bg-white p-3 rounded-3 shadow-sm border border-light h-100">
+                                    <label class="text-muted small fw-medium mb-1"><i
+                                            class="bi bi-calendar-event me-2 text-primary"></i>Age</label>
+                                    <div class="fw-semibold text-dark">{{ profile.age }} Years</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="bg-white p-3 rounded-3 shadow-sm border border-light h-100">
+                                    <label class="text-muted small fw-medium mb-1"><i
+                                            class="bi bi-gender-ambiguous me-2 text-primary"></i>Gender</label>
+                                    <div class="fw-semibold text-dark">{{ profile.gender }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-2 px-1">
+                            <div class="info-item">
+                                <label class="text-muted small fw-medium d-block">Member Since</label>
+                                <div class="text-dark small fw-semibold">
+                                    {% if user.date_joined %}
+                                    {{ user.date_joined|date:"F d, Y" }}
+                                    <span class="text-muted mx-1">•</span>
+                                    {{ user.date_joined|time:"h:i A" }}
+                                    {% else %}
+                                    <span class="text-muted italic">Not Available</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="info-item text-end">
+                                <label class="text-muted small fw-medium d-block">Account Status</label>
+                                <span
+                                    class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ══════════════════════════════════════════════════════════
+     DELETE CONFIRMATION MODAL
+     Professional confirmation dialog before deleting a resume
+     ══════════════════════════════════════════════════════════ -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-danger" id="deleteConfirmModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Deletion
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <p class="mb-2">Are you sure you want to delete this resume?</p>
+                    <div class="alert alert-warning border-0 d-flex align-items-start" role="alert">
+                        <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+                        <div>
+                            <strong id="deleteResumeTitle" class="d-block mb-1"></strong>
+                            <small>This action cannot be undone. All associated data will be permanently
+                                deleted.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteConfirmForm" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-2"></i>Delete Permanently
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+     SCRIPTS
+     Bootstrap, jQuery (if needed), and custom dashboard.js
+     ══════════════════════════════════════════════════════════ -->
+
+    <!-- Bootstrap 5 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom Dashboard JavaScript -->
+    <script src="{% static 'js/dashboard.js' %}"></script>
+
+</body>
+
+</html>

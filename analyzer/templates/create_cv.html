@@ -1,0 +1,1356 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SmartCV — create_cv.html
+═══════════════════════════════════════════════════════════════════════════ -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCV | Create CV</title>
+
+    <!-- Bootstrap 5.3 — grid, accordion, badges, progress, utilities -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons 1.11 — used throughout the form and CV preview -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts — Inter for UI; loaded via preconnect for faster DNS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Application stylesheet — all SmartCV component styles -->
+    <!-- <link rel="stylesheet" href="{% static 'css/cv_templates.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/create_cv.css' %}">
+</head>
+
+<body>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         NAVBAR
+     ════════════════════════════════════════════════════════════════════ -->
+    <nav class="navbar navbar-expand-lg sticky-top custom-nav">
+        <div class="container">
+
+            <!-- Brand: icon + text -->
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+                <i class="bi bi-file-earmark-text-fill text-primary fs-4"></i>
+                <span class="fw-bold text-white">SmartCV</span>
+            </a>
+
+            <!-- Mobile toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Nav links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-lg-2">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">ABOUT</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{% url 'create_cv' %}">CREATE CV</a></li>
+                    <li class="nav-item">
+                        <a href="{% url 'dashboard' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#1d4ed8;color:#fff;border-radius:8px;">
+                            <i class="bi bi-grid me-1"></i>DASHBOARD
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'logout' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
+                            style="background:#da0505;color:#fff;border-radius:8px;">
+                            <i class="bi bi-box-arrow-right me-1"></i>LOGOUT
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         MAIN BUILDER
+    ════════════════════════════════════════════════════════════════════ -->
+    <div class="container-fluid py-4 builder-outer">
+        <!-- Two-column grid: form (left) + preview (right) -->
+        <div class="row g-4 builder-row align-items-start">
+            <!-- ════════════════════════════════════════════════════════════
+                 LEFT COLUMN — FORM
+             ════════════════════════════════════════════════════════════ -->
+            <div class="col-lg-5">
+
+                <!-- ════════════════════════════════════════════════════════════
+                 Left COLUMN — ATS SCORE BOX + SUGGESTIONS
+                 ════════════════════════════════════════════════════════════ -->
+                 <!-- ── ATS SCORE CARD ── -->                
+                <div class="ats-card shadow-sm p-3 border rounded-3 bg-white">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                        <!-- Score display -->
+                        <div class="d-flex align-items-center gap-3">
+                            <div>
+                                <h5 class="fw-bold text-dark mb-1">
+                                    <i class="bi bi-robot text-primary me-2"></i>Live ATS Score
+                                </h5>
+                                <p class="text-muted small mb-0">Updates as you fill required fields</p>
+                            </div>
+                            <!-- JS updates this element's textContent and color via recalcAts() -->
+                            <div class="fw-bold" id="liveAtsScore" style="font-size:2.2rem; color:#6366f1;">0%</div>
+                        </div>
+
+                        <!-- FIX #6: Download PDF button — wired to downloadPdfHandler() in JS -->
+                        <button type="button" class="btn btn-outline-success fw-bold" id="downloadPdfBtn">
+                            <i class="bi bi-file-pdf me-2"></i> Download PDF
+                        </button>
+
+                    </div>
+
+                    <!-- Progress bar — width driven by JS recalcAts() -->
+                    <div class="progress mt-2" style="height:8px; border-radius:4px;">
+                        <div id="atsProgressBar" class="progress-bar" role="progressbar"
+                            style="width:0%; background:#6366f1; transition:width .4s;" aria-valuenow="0"
+                            aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+
+                    <div class="mt-2" id="atsSuggestionsList" style="max-height:120px; overflow-y:auto;"></div>
+
+                </div><!-- end ATS card -->
+                
+                <div class="card border-0 shadow-sm rounded-4 p-3 p-md-4">
+                    <!-- Page Heading -->
+                    <div class="mb-4 text-center">
+                        <h2 class="fw-bold text-dark">Build Your Professional CV</h2>
+                        <p class="text-muted mb-0">Pick a template · Fill the form · See it live on the right</p>
+                    </div>
+
+                    <!-- Django form: POST to create_cv view; multipart for photo upload -->
+                    <form method="POST"
+                        action="{% if edit_mode %}{% url 'edit_cv' cv.id %}{% else %}{% url 'create_cv' %}{% endif %}"
+                        enctype="multipart/form-data" id="cvForm" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" name="live_ats_score" id="hiddenAtsScore" value="0">
+                        <div class="accordion accordion-flush" id="cvBuilderAccordion">
+                            <!-- ─────────────────────────────────────────
+                                 SECTION 1 — CHOOSE TEMPLATE
+                            ───────────────────────────────────────── -->
+                            <div class="accordion-item border-0 mb-2 rounded-3 shadow-sm overflow-hidden">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button acc-btn rounded-3" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseTemplate">
+                                        <i class="bi bi-grid-1x2 me-2 text-primary"></i>
+                                        <strong>1. Choose Template</strong>
+                                    </button>
+                                </h2>
+                                <div id="collapseTemplate" class="accordion-collapse collapse show"
+                                    data-bs-parent="#cvBuilderAccordion">
+                                    <div class="accordion-body pt-2">
+                                        <div class="template-scroll-box">
+                                            <div class="tmpl-grid" id="templateGrid">
+
+                                                <!-- T1: Navy Sidebar -->
+                                                <div class="tmpl-card">
+                                                    <input type="radio" name="template_chosen" value="template1" id="t1"
+                                                        checked>
+                                                    <div class="tmpl-frame"
+                                                        onclick="document.getElementById('t1').click(); updatePreview();">
+                                                        <div class="tmpl-check"><i class="bi bi-check"></i></div>
+                                                        <div class="t1" style="height:100%;">
+                                                            <div class="ts">
+                                                                <div class="tc"></div>
+                                                                <div class="tl"></div>
+                                                                <div class="tl s"></div>
+                                                                <div style="height:5px"></div>
+                                                                <div class="tl s"></div>
+                                                                <div class="tl"></div>
+                                                                <div class="tl s"></div>
+                                                            </div>
+                                                            <div class="tm">
+                                                                <div class="ths"></div>
+                                                                <div class="th"></div>
+                                                                <div class="th"></div>
+                                                                <div style="height:5px"></div>
+                                                                <div class="ths"></div>
+                                                                <div class="th"></div>
+                                                                <div class="th"></div>
+                                                                <div class="th"></div>
+                                                                <div style="height:5px"></div>
+                                                                <div class="ths"></div>
+                                                                <div class="th"></div>
+                                                                <div class="th"></div>
+                                                                <div style="height:5px"></div>
+                                                                <div class="ths"></div>
+                                                                <div class="th"></div>
+                                                                <div class="th"></div>
+                                                                <div class="th"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tmpl-name">
+                                                        Template 1<br>Navy Sidebar
+                                                    </p>
+                                                </div>
+
+                                                <!-- T2: Blue Header -->
+                                                <div class="tmpl-card">
+                                                    <input type="radio" name="template_chosen" value="template2"
+                                                        id="t2">
+                                                    <div class="tmpl-frame"
+                                                        onclick="document.getElementById('t2').click(); updatePreview();">
+                                                        <div class="tmpl-check"><i class="bi bi-check"></i></div>
+                                                        <div class="t2" style="height:100%;">
+                                                            <div class="thdr">
+                                                                <div class="tn"></div>
+                                                                <div class="ts2"></div>
+                                                                <div style="display:flex;gap:4px;margin-top:4px;">
+                                                                    <div
+                                                                        style="height:2px;flex:1;background:rgba(255,255,255,.5);border-radius:1px;">
+                                                                    </div>
+                                                                    <div
+                                                                        style="height:2px;flex:1;background:rgba(255,255,255,.5);border-radius:1px;">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tb">
+                                                                <div class="tls"></div>
+                                                                <div class="tl2"></div>
+                                                                <div class="tl2"></div>
+                                                                <div class="tl2" style="width:70%"></div>
+                                                                <div class="tls"></div>
+                                                                <div class="tl2"></div>
+                                                                <div class="tl2" style="width:80%"></div>
+                                                                <div class="tls"></div>
+                                                                <div style="display:flex;flex-wrap:wrap;gap:3px;">
+                                                                    <div
+                                                                        style="height:8px;width:28px;background:#dbeafe;border-radius:10px;">
+                                                                    </div>
+                                                                    <div
+                                                                        style="height:8px;width:22px;background:#dbeafe;border-radius:10px;">
+                                                                    </div>
+                                                                    <div
+                                                                        style="height:8px;width:25px;background:#dbeafe;border-radius:10px;">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tmpl-name">
+                                                        Template 2<br>Blue Header
+                                                    </p>
+                                                </div>
+
+                                                <!-- T3: Gradient Banner -->
+                                                <div class="tmpl-card">
+                                                    <input type="radio" name="template_chosen" value="template3"
+                                                        id="t3">
+                                                    <div class="tmpl-frame"
+                                                        onclick="document.getElementById('t3').click(); updatePreview();">
+                                                        <div class="tmpl-check"><i class="bi bi-check"></i></div>
+                                                        <div class="t3" style="height:100%;">
+                                                            <div class="thdr">
+                                                                <div class="tn3"></div>
+                                                                <div class="ts3"></div>
+                                                                <div style="display:flex;gap:3px;margin-top:4px;">
+                                                                    <div
+                                                                        style="height:2px;flex:1;background:rgba(255,255,255,.4);border-radius:1px;">
+                                                                    </div>
+                                                                    <div
+                                                                        style="height:2px;flex:1;background:rgba(255,255,255,.4);border-radius:1px;">
+                                                                    </div>
+                                                                    <div
+                                                                        style="height:2px;flex:1;background:rgba(255,255,255,.4);border-radius:1px;">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tb3">
+                                                                <div class="tc3a">
+                                                                    <div
+                                                                        style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:4px;width:60%;">
+                                                                    </div>
+                                                                    <div class="tl3"></div>
+                                                                    <div class="tl3"></div>
+                                                                    <div class="tl3" style="width:70%;"></div>
+                                                                    <div
+                                                                        style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:4px;width:60%;margin-top:5px;">
+                                                                    </div>
+                                                                    <div class="tl3"></div>
+                                                                    <div class="tl3"></div>
+                                                                </div>
+                                                                <div class="tc3b">
+                                                                    <div
+                                                                        style="height:2px;background:#e2e8f0;border-radius:1px;margin-bottom:4px;width:60%;">
+                                                                    </div>
+                                                                    <div class="tl3"></div>
+                                                                    <div class="tl3"></div>
+                                                                    <div
+                                                                        style="display:flex;flex-wrap:wrap;gap:2px;margin-top:5px;">
+                                                                        <div
+                                                                            style="height:7px;width:20px;background:#e0e7ff;border-radius:3px;">
+                                                                        </div>
+                                                                        <div
+                                                                            style="height:7px;width:16px;background:#e0e7ff;border-radius:3px;">
+                                                                        </div>
+                                                                        <div
+                                                                            style="height:7px;width:22px;background:#e0e7ff;border-radius:3px;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tmpl-name">
+                                                        Template 3<br>Gradient Banner
+                                                    </p>
+                                                </div>
+
+                                                <!-- T4: Teal Sidebar -->
+                                                <div class="tmpl-card">
+                                                    <input type="radio" name="template_chosen" value="template4"
+                                                        id="t4">
+                                                    <div class="tmpl-frame"
+                                                        onclick="document.getElementById('t4').click(); updatePreview();">
+                                                        <div class="tmpl-check"><i class="bi bi-check"></i></div>
+                                                        <div class="t4" style="height:100%;">
+                                                            <div class="ts4">
+                                                                <div class="tc4"></div>
+                                                                <div class="tl4"></div>
+                                                                <div class="tl4 s"></div>
+                                                                <div style="height:4px"></div>
+                                                                <div class="tl4 s"></div>
+                                                                <div class="tl4"></div>
+                                                            </div>
+                                                            <div class="tm4">
+                                                                <div class="th4" style="width:50%;"></div>
+                                                                <div class="th4"></div>
+                                                                <div class="th4"></div>
+                                                                <div style="height:5px"></div>
+                                                                <div class="th4" style="width:50%;"></div>
+                                                                <div class="th4"></div>
+                                                                <div class="th4"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tmpl-name">
+                                                        Template 4<br>Teal Sidebar
+                                                    </p>
+                                                </div>
+
+                                                <!-- T5: Academic -->
+                                                <div class="tmpl-card">
+                                                    <input type="radio" name="template_chosen" value="template5"
+                                                        id="t5">
+                                                    <div class="tmpl-frame"
+                                                        onclick="document.getElementById('t5').click(); updatePreview();">
+                                                        <div class="tmpl-check"><i class="bi bi-check"></i></div>
+                                                        <div class="t5" style="height:100%;">
+                                                            <div class="thc">
+                                                                <div class="tn5"></div>
+                                                                <div class="ts5"></div>
+                                                                <div class="ti5">
+                                                                    <span></span><span></span><span></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tss5"></div>
+                                                            <div class="tl5"></div>
+                                                            <div class="tl5"></div>
+                                                            <div class="tss5"></div>
+                                                            <div class="tl5"></div>
+                                                            <div class="tl5" style="width:70%"></div>
+                                                            <div class="tss5"></div>
+                                                            <div style="display:flex;flex-wrap:wrap;gap:2px;">
+                                                                <div
+                                                                    style="height:7px;width:24px;background:#e2e8f0;border:1px solid #1B263B;border-radius:2px;">
+                                                                </div>
+                                                                <div
+                                                                    style="height:7px;width:20px;background:#e2e8f0;border:1px solid #1B263B;border-radius:2px;">
+                                                                </div>
+                                                                <div
+                                                                    style="height:7px;width:22px;background:#e2e8f0;border:1px solid #1B263B;border-radius:2px;">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tmpl-name">
+                                                        Template 5<br>Academic
+                                                    </p>
+                                                </div>
+
+                                                <!-- T6: Tech Dark -->
+                                                <div class="tmpl-card">
+                                                    <input type="radio" name="template_chosen" value="template6"
+                                                        id="t6">
+                                                    <div class="tmpl-frame"
+                                                        onclick="document.getElementById('t6').click(); updatePreview();">
+                                                        <div class="tmpl-check"><i class="bi bi-check"></i></div>
+                                                        <div class="t6" style="height:100%;">
+                                                            <div class="thdr6">
+                                                                <div class="tn6"></div>
+                                                                <div class="ts6"></div>
+                                                                <div class="ti6"><span></span><span></span></div>
+                                                            </div>
+                                                            <div class="tb6">
+                                                                <div class="tbs6"></div>
+                                                                <div class="tl6"></div>
+                                                                <div class="tl6"></div>
+                                                                <div class="tbs6"></div>
+                                                                <div class="tl6"></div>
+                                                                <div class="tl6" style="width:70%"></div>
+                                                                <div class="tbs6"></div>
+                                                                <div style="display:flex;flex-wrap:wrap;gap:2px;">
+                                                                    <div
+                                                                        style="height:7px;width:24px;background:#0f172a;border-radius:3px;">
+                                                                    </div>
+                                                                    <div
+                                                                        style="height:7px;width:20px;background:#0f172a;border-radius:3px;">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tmpl-name">
+                                                        Template 6<br>Tech Dark
+                                                    </p>
+                                                </div>
+
+                                                <!-- T7: Violet Lines -->
+                                                <div class="tmpl-card">
+                                                    <input type="radio" name="template_chosen" value="template7"
+                                                        id="t7">
+                                                    <div class="tmpl-frame"
+                                                        onclick="document.getElementById('t7').click(); updatePreview();">
+                                                        <div class="tmpl-check"><i class="bi bi-check"></i></div>
+                                                        <div class="t7" style="height:100%;">
+                                                            <div class="tnn7"></div>
+                                                            <div class="ts7"></div>
+                                                            <div class="tct7">
+                                                                <span></span><span></span><span></span>
+                                                            </div>
+                                                            <div class="entry7">
+                                                                <div class="tl7"></div>
+                                                                <div class="tl7"></div>
+                                                                <div class="tls7"></div>
+                                                            </div>
+                                                            <div class="entry7">
+                                                                <div class="tl7"></div>
+                                                                <div class="tl7" style="width:70%"></div>
+                                                            </div>
+                                                            <div
+                                                                style="display:flex;flex-wrap:wrap;gap:2px;margin-top:6px;">
+                                                                <div
+                                                                    style="height:8px;width:24px;background:#f5f3ff;border-radius:12px;">
+                                                                </div>
+                                                                <div
+                                                                    style="height:8px;width:20px;background:#f5f3ff;border-radius:12px;">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tmpl-name">
+                                                        Template 7<br>Violet Lines
+                                                    </p>
+                                                </div>
+
+                                                <!-- T8: Light Sidebar -->
+                                                <div class="tmpl-card">
+                                                    <input type="radio" name="template_chosen" value="template8"
+                                                        id="t8">
+                                                    <div class="tmpl-frame"
+                                                        onclick="document.getElementById('t8').click(); updatePreview();">
+                                                        <div class="tmpl-check"><i class="bi bi-check"></i></div>
+                                                        <div class="t8" style="height:100%;">
+                                                            <div class="ts8">
+                                                                <div class="tc8"></div>
+                                                                <div class="tls8"></div>
+                                                                <div class="tl8"></div>
+                                                                <div class="tl8 s"></div>
+                                                                <div style="height:4px"></div>
+                                                                <div class="tl8 s"></div>
+                                                                <div class="tl8"></div>
+                                                            </div>
+                                                            <div class="tm8">
+                                                                <div class="th8" style="width:50%;"></div>
+                                                                <div class="th8"></div>
+                                                                <div class="th8"></div>
+                                                                <div style="height:5px"></div>
+                                                                <div class="th8" style="width:50%;"></div>
+                                                                <div class="th8"></div>
+                                                                <div class="th8" style="width:75%;"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tmpl-name">
+                                                        Template 8<br>Light Sidebar
+                                                    </p>
+                                                </div>
+
+                                                <!-- T9: Red Strip -->
+                                                <div class="tmpl-card">
+                                                    <input type="radio" name="template_chosen" value="template9"
+                                                        id="t9">
+                                                    <div class="tmpl-frame"
+                                                        onclick="document.getElementById('t9').click(); updatePreview();">
+                                                        <div class="tmpl-check"><i class="bi bi-check"></i></div>
+                                                        <div class="t9" style="height:100%;">
+                                                            <div class="ts9"></div>
+                                                            <div class="tm9">
+                                                                <div class="tnn9"></div>
+                                                                <div class="tss9"></div>
+                                                                <div style="height:5px"></div>
+                                                                <div class="tlsh9"></div>
+                                                                <div class="tl9"></div>
+                                                                <div class="tl9"></div>
+                                                                <div style="height:4px"></div>
+                                                                <div class="tlsh9"></div>
+                                                                <div class="tl9"></div>
+                                                                <div class="tl9" style="width:70%"></div>
+                                                                <div
+                                                                    style="display:flex;flex-wrap:wrap;gap:2px;margin-top:5px;">
+                                                                    <div
+                                                                        style="height:7px;width:22px;background:#fff1f2;border:1px solid #fecdd3;border-radius:3px;">
+                                                                    </div>
+                                                                    <div
+                                                                        style="height:7px;width:18px;background:#fff1f2;border:1px solid #fecdd3;border-radius:3px;">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tmpl-name">
+                                                        Template 9<br>Red Strip
+                                                    </p>
+                                                </div>
+
+                                                <!-- T10: Green Pro -->
+                                                <div class="tmpl-card">
+                                                    <input type="radio" name="template_chosen" value="template10"
+                                                        id="t10">
+                                                    <div class="tmpl-frame"
+                                                        onclick="document.getElementById('t10').click(); updatePreview();">
+                                                        <div class="tmpl-check"><i class="bi bi-check"></i></div>
+                                                        <div class="t10" style="height:100%;">
+                                                            <div class="ts10">
+                                                                <div class="tn10"></div>
+                                                                <div class="tss10"></div>
+                                                                <div style="height:4px"></div>
+                                                                <div class="tl10"></div>
+                                                                <div class="tl10 s"></div>
+                                                                <div class="tl10 s"></div>
+                                                            </div>
+                                                            <div class="tm10">
+                                                                <div class="tls10"></div>
+                                                                <div class="th10"></div>
+                                                                <div class="th10"></div>
+                                                                <div style="height:5px"></div>
+                                                                <div class="tls10"></div>
+                                                                <div class="th10"></div>
+                                                                <div class="th10" style="width:70%;"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <p class="tmpl-name">
+                                                        Template 10<br>Green Pro
+                                                    </p>
+                                                </div>
+
+                                            </div><!-- end .tmpl-grid -->
+                                        </div><!-- end .template-scroll-box -->
+                                    </div>
+                                </div>
+                            </div><!-- end Section 1 -->
+
+                            <!-- ─────────────────────────────────────────
+                                 SECTION 2 — FONT & COLOR
+                            ───────────────────────────────────────── -->
+                            <div class="accordion-item border-0 mb-2 rounded-3 shadow-sm overflow-hidden">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button acc-btn collapsed rounded-3" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseColors">
+                                        <i class="bi bi-palette me-2 text-primary"></i>
+                                        <strong>2. Font &amp; Color</strong>
+                                    </button>
+                                </h2>
+                                <div id="collapseColors" class="accordion-collapse collapse"
+                                    data-bs-parent="#cvBuilderAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row g-3">
+
+                                            <!-- Font Family -->
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold small">Font Family</label>
+                                                <select class="form-select form-select-sm" name="font_family"
+                                                    id="inputFont">
+                                                    <option value="'Roboto', sans-serif">Roboto (Modern)</option>
+                                                    <option value="Arial, sans-serif" selected>Arial (Classic)
+                                                    </option>
+                                                    <option value="'Times New Roman', serif">Times New Roman
+                                                    </option>
+                                                    <option value="'Georgia', serif">Georgia</option>
+                                                    <option value="Verdana, sans-serif">Verdana</option>
+                                                    <option value="Calibri, sans-serif">Calibri</option>
+                                                    <option value="'Century', serif">Century</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- 3 Different Font Sizes Types -->
+
+                                            <!-- Name Font Size -->
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold small">Name Size</label>
+                                                <select class="form-select form-select-sm" name="font_size_name"
+                                                    id="inputFontSizeName">
+                                                    <option value="18px">18px</option>
+                                                    <option value="20px" selected>20px</option>
+                                                    <option value="22px">22px</option>
+                                                    <option value="24px">24px</option>
+                                                    <option value="26px">26px</option>
+                                                    <option value="28px">28px</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Heading Font Size -->
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-semibold small">Heading Size</label>
+                                                <select class="form-select form-select-sm" name="font_size_heading"
+                                                    id="inputFontSizeHeading">
+                                                    <option value="14px">14px</option>
+                                                    <option value="16px">16px</option>
+                                                    <option value="18px" selected>18px</option>
+                                                    <option value="20px">20px</option>
+                                                    <option value="22px">22px</option>
+                                                    <option value="24px">24px</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Details Font Size -->
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-semibold small">Details Size</label>
+                                                <select class="form-select form-select-sm" name="font_size_details"
+                                                    id="inputFontSizeDetails">
+                                                    <option value="12px">12px</option>
+                                                    <option value="13px">13px</option>
+                                                    <option value="14px">14px</option>
+                                                    <option value="15px">15px</option>
+                                                    <option value="16px" selected>16px</option>
+                                                    <option value="17px">17px</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Theme Color (hex swatches) -->
+                                            <div class="col-12">
+                                                <label class="form-label fw-semibold small">Theme Color</label>
+                                                <!-- Hidden input POSTed with the form; updated by JS setHexColor() -->
+                                                <input type="hidden" name="color_scheme" id="hexColorValue"
+                                                    value="#2563eb">
+                                                <!-- Hexagonal swatches; data-color drives JS setHexColor() -->
+                                                <div class="d-flex flex-wrap gap-2 mt-1" id="colorSwatches">
+                                                    <div class="hex-swatch active" style="background:#2563eb;"
+                                                        data-color="#2563eb" title="Blue"></div>
+                                                    <div class="hex-swatch" style="background:#1B263B;"
+                                                        data-color="#1B263B" title="Navy"></div>
+                                                    <div class="hex-swatch" style="background:#0e7490;"
+                                                        data-color="#0e7490" title="Teal"></div>
+                                                    <div class="hex-swatch" style="background:#7c3aed;"
+                                                        data-color="#7c3aed" title="Purple"></div>
+                                                    <div class="hex-swatch" style="background:#dc2626;"
+                                                        data-color="#dc2626" title="Red"></div>
+                                                    <div class="hex-swatch" style="background:#ea580c;"
+                                                        data-color="#ea580c" title="Orange"></div>
+                                                    <div class="hex-swatch" style="background:#16a34a;"
+                                                        data-color="#16a34a" title="Green"></div>
+                                                    <div class="hex-swatch" style="background:#0f172a;"
+                                                        data-color="#0f172a" title="Dark"></div>
+                                                    <div class="hex-swatch" style="background:#6b7280;"
+                                                        data-color="#6b7280" title="Gray"></div>
+                                                </div>
+                                            </div>
+
+                                        </div><!-- end .row -->
+                                    </div>
+                                </div>
+                            </div><!-- end Section 2 -->
+
+                            <!-- ─────────────────────────────────────────
+                                 SECTION 3 — PERSONAL INFORMATION
+                                 ───────────────────────────────────────── -->
+                            <div class="accordion-item border-0 mb-2 rounded-3 shadow-sm overflow-hidden">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button acc-btn collapsed rounded-3" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapsePersonal">
+                                        <i class="bi bi-person me-2 text-primary"></i>
+                                        <strong>3. Personal Information</strong>
+                                        <span class="badge badge-req ms-2">Required</span>
+                                    </button>
+                                </h2>
+                                <div id="collapsePersonal" class="accordion-collapse collapse"
+                                    data-bs-parent="#cvBuilderAccordion">
+                                    <div class="accordion-body">
+                                        <div class="row g-3">
+                                            <!-- Profile photo (optional) -->
+                                            <!-- <div class="col-12 text-center">
+                                                <label class="form-label fw-semibold small d-block">
+                                                    Profile Photo <span class="text-muted">(Optional)</span>
+                                                </label> -->
+                                                <!-- onchange calls previewImage() to store base64 data-URL -->
+                                                <!-- <input type="file" class="form-control form-control-sm"
+                                                    name="profile_photo" id="inputPhoto" accept="image/*"
+                                                    onchange="previewImage(event)">
+                                            </div> -->
+                                            <!-- Full name — synced to preview by JS syncInputToPreview() -->
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">
+                                                    Full Name <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" class="form-control form-control-sm" name="full_name"
+                                                    id="inputName" placeholder="John Doe" required>
+                                            </div>
+                                            <!-- Target job title — used in Resume.title by views.py -->
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">
+                                                    Target Job Title <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" class="form-control form-control-sm"
+                                                    name="job_title_target" id="inputJobTarget"
+                                                    placeholder="Software Engineer" required>
+                                            </div>
+                                            <!-- Email — also checked for professionalism by ATS scorer -->
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">
+                                                    Email <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="email" class="form-control form-control-sm" name="email"
+                                                    id="inputEmail" placeholder="name@example.com" required>
+                                            </div>
+                                            <!-- Phone -->
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">
+                                                    Phone <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" class="form-control form-control-sm" name="phone"
+                                                    id="inputPhone" placeholder="+91 9876543210" required>
+                                            </div>
+                                            <!-- Location (optional) -->
+                                            <div class="col-12">
+                                                <label class="form-label small fw-semibold">Location</label>
+                                                <input type="text" class="form-control form-control-sm" name="address"
+                                                    id="inputAddress" placeholder="City, State, Country">
+                                            </div>
+                                            <!-- LinkedIn URL (optional) -->
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">LinkedIn URL</label>
+                                                <input type="url" class="form-control form-control-sm" name="linkedin"
+                                                    id="inputLinkedin" placeholder="https://linkedin.com/in/...">
+                                            </div>
+                                            <!-- GitHub URL (optional) -->
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">GitHub URL</label>
+                                                <input type="url" class="form-control form-control-sm" name="github"
+                                                    id="inputGithub" placeholder="https://github.com/...">
+                                            </div>
+                                            <!-- Professional Summary — word count drives ATS summary score -->
+                                            <div class="col-12">
+                                                <label class="form-label small fw-semibold">
+                                                    Professional Summary <span class="text-danger">*</span>
+                                                </label>
+                                                <textarea class="form-control form-control-sm" name="summary"
+                                                    id="inputSummary" rows="4"
+                                                    placeholder="Write 40+ words about your career goals, skills, and strengths..."
+                                                    required></textarea>
+                                                <small class="text-muted">
+                                                    Tip: 40+ words boosts your ATS score significantly.
+                                                </small>
+                                            </div>
+                                        </div><!-- end .row -->
+                                    </div>
+                                </div>
+                            </div><!-- end Section 3 -->
+
+                            <!-- ─────────────────────────────────────────
+                                 SECTION 4 — EDUCATION 
+                                 ───────────────────────────────────────── -->
+                            <div class="accordion-item border-0 mb-2 rounded-3 shadow-sm overflow-hidden">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button acc-btn collapsed rounded-3" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseEdu">
+                                        <i class="bi bi-mortarboard me-2 text-primary"></i>
+                                        <strong>4. Education</strong>
+                                        <span class="badge badge-req ms-2">Required</span>
+                                    </button>
+                                </h2>
+                                <div id="collapseEdu" class="accordion-collapse collapse"
+                                    data-bs-parent="#cvBuilderAccordion">
+                                    <div class="accordion-body">
+                                        <div id="eduContainer">
+
+                                            <!-- First row: remove button hidden (JS shows it on clones) -->
+                                            <div class="dynamic-entry edu-entry entry-card mb-3 position-relative">
+                                                <button type="button" class="btn btn-danger btn-sm remove-btn"
+                                                    onclick="removeEntry(this, updateEducationPreview)">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                                <div class="row g-2">
+                                                    <div class="col-12">
+                                                        <label class="form-label small fw-semibold">Degree /
+                                                            Qualification</label>
+                                                        <input type="text"
+                                                            class="form-control form-control-sm sync-edu-degree"
+                                                            name="edu_degree[]" placeholder="B.Tech Computer Science">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label small fw-semibold">University /
+                                                            School</label>
+                                                        <input type="text"
+                                                            class="form-control form-control-sm sync-edu-uni"
+                                                            name="edu_university[]" placeholder="XYZ University">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label small fw-semibold">Years</label>
+                                                        <input type="text"
+                                                            class="form-control form-control-sm sync-edu-duration"
+                                                            name="edu_duration[]" placeholder="2021-2025">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label small fw-semibold">Percentage /
+                                                            CGPA</label>
+                                                        <input type="text"
+                                                            class="form-control form-control-sm sync-edu-cgpa"
+                                                            name="edu_cgpa[]" placeholder="8.5 CGPA / 85%">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div><!-- end #eduContainer -->
+                                        <div class="d-flex justify-content-end mt-2">
+                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                onclick="addMore('eduContainer','edu-entry',updateEducationPreview)">
+                                                <i class="bi bi-plus-circle me-1"></i> Add Education
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- end Section 4 -->
+
+                            <!-- ─────────────────────────────────────────
+                                 SECTION 5 — WORK EXPERIENCE
+                                 ───────────────────────────────────────── -->
+                            <div class="accordion-item border-0 mb-2 rounded-3 shadow-sm overflow-hidden">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button acc-btn collapsed rounded-3" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseExp">
+                                        <i class="bi bi-briefcase me-2 text-primary"></i>
+                                        <strong>5. Work Experience</strong>
+                                    </button>
+                                </h2>
+                                <div id="collapseExp" class="accordion-collapse collapse"
+                                    data-bs-parent="#cvBuilderAccordion">
+                                    <div class="accordion-body">
+                                        <div id="expContainer">
+
+                                            <div class="dynamic-entry exp-entry entry-card mb-3 position-relative">
+                                                <button type="button" class="btn btn-danger btn-sm remove-btn"
+                                                    onclick="removeEntry(this, updateExperiencePreview)">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                                <div class="row g-2">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label small fw-semibold">Job
+                                                            Title</label>
+                                                        <input type="text"
+                                                            class="form-control form-control-sm sync-exp-title"
+                                                            name="exp_title[]" placeholder="Software Developer">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label small fw-semibold">Company</label>
+                                                        <input type="text"
+                                                            class="form-control form-control-sm sync-exp-company"
+                                                            name="exp_company[]" placeholder="ABC Corp">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label small fw-semibold">Years</label>
+                                                        <input type="text"
+                                                            class="form-control form-control-sm sync-exp-duration"
+                                                            name="exp_duration[]" placeholder="Jan 2024 – Present">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label small fw-semibold">Description</label>
+                                                        <!-- Tip: using bullet lines (- or •) earns ATS action-verb points -->
+                                                        <textarea class="form-control form-control-sm sync-exp-desc"
+                                                            name="exp_desc[]" rows="2"
+                                                            placeholder="- Developed ... using Python&#10;- Optimized ..."></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div><!-- end #expContainer -->
+                                        <div class="d-flex justify-content-end mt-2">
+                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                onclick="addMore('expContainer','exp-entry',updateExperiencePreview)">
+                                                <i class="bi bi-plus-circle me-1"></i> Add Experience
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- end Section 5 -->
+
+
+                            <!-- ─────────────────────────────────────────
+                                 SECTION 6 — PROJECTS
+                                 ───────────────────────────────────────── -->
+                            <div class="accordion-item border-0 mb-2 rounded-3 shadow-sm overflow-hidden">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button acc-btn collapsed rounded-3" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseProj">
+                                        <i class="bi bi-kanban me-2 text-primary"></i>
+                                        <strong>6. Projects</strong>
+                                        <span class="badge badge-req ms-2">Required</span>
+                                    </button>
+                                </h2>
+                                <div id="collapseProj" class="accordion-collapse collapse"
+                                    data-bs-parent="#cvBuilderAccordion">
+                                    <div class="accordion-body">
+                                        <div id="projContainer">
+
+                                            <div class="dynamic-entry proj-entry entry-card mb-3 position-relative">
+                                                <button type="button" class="btn btn-danger btn-sm remove-btn"
+                                                    onclick="removeEntry(this, updateProjectPreview)">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                                <div class="row g-2">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label small fw-semibold">Project
+                                                            Title</label>
+                                                        <input type="text"
+                                                            class="form-control form-control-sm sync-proj-title"
+                                                            name="proj_title[]" placeholder="SmartCV Builder">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label small fw-semibold">Technologies
+                                                            Used</label>
+                                                        <input type="text"
+                                                            class="form-control form-control-sm sync-proj-tech"
+                                                            name="proj_tech[]" placeholder="Django, Bootstrap, JS">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label small fw-semibold">
+                                                            Project Link <span class="text-muted">(Optional)</span>
+                                                        </label>
+                                                        <input type="url"
+                                                            class="form-control form-control-sm sync-proj-link"
+                                                            name="proj_link[]" placeholder="https://github.com/...">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label small fw-semibold">Description</label>
+                                                        <textarea class="form-control form-control-sm sync-proj-desc"
+                                                            name="proj_desc[]" rows="2"
+                                                            placeholder="- Built an AI-powered CV builder ..."></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div><!-- end #projContainer -->
+                                        <div class="d-flex justify-content-end mt-2">
+                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                onclick="addMore('projContainer','proj-entry',updateProjectPreview)">
+                                                <i class="bi bi-plus-circle me-1"></i> Add Project
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- end Section 6 -->
+
+
+                            <!-- ─────────────────────────────────────────
+                                 SECTION 7 — SKILLS
+                                 ───────────────────────────────────────── -->
+                            <div class="accordion-item border-0 mb-2 rounded-3 shadow-sm overflow-hidden">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button acc-btn collapsed rounded-3" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseSkills">
+                                        <i class="bi bi-lightning me-2 text-primary"></i>
+                                        <strong>7. Skills</strong>
+                                        <span class="badge badge-req ms-2">Required</span>
+                                    </button>
+                                </h2>
+                                <div id="collapseSkills" class="accordion-collapse collapse"
+                                    data-bs-parent="#cvBuilderAccordion">
+                                    <div class="accordion-body">
+                                        <label class="form-label small fw-semibold">Comma-separated skills</label>
+                                        <textarea class="form-control form-control-sm" id="inputSkills" name="skills"
+                                            rows="3"
+                                            placeholder="Python, Django, HTML 5, CSS 3, JavaScript, SQL, Git"></textarea>
+                                        <small class="text-muted">Tip: Add 6+ skills for a better ATS score.</small>
+                                    </div>
+                                </div>
+                            </div><!-- end Section 7 -->
+
+
+                            <!-- ─────────────────────────────────────────
+                                 SECTION 8 — LANGUAGES
+                                 ───────────────────────────────────────── -->
+                            <div class="accordion-item border-0 mb-2 rounded-3 shadow-sm overflow-hidden">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button acc-btn collapsed rounded-3" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseLang">
+                                        <i class="bi bi-translate me-2 text-primary"></i>
+                                        <strong>8. Languages</strong>
+                                    </button>
+                                </h2>
+                                <div id="collapseLang" class="accordion-collapse collapse"
+                                    data-bs-parent="#cvBuilderAccordion">
+                                    <div class="accordion-body">
+                                        <label class="form-label small fw-semibold">Comma-separated
+                                            languages</label>
+                                        <input type="text" class="form-control form-control-sm" id="inputLanguages"
+                                            name="languages" placeholder="English (Fluent), Hindi, Marathi">
+                                    </div>
+                                </div>
+                            </div><!-- end Section 8 -->
+
+
+                            <!-- ─────────────────────────────────────────
+                                 SECTION 9 — CUSTOM SECTIONS
+                                 ───────────────────────────────────────── -->
+                            <div class="accordion-item border-0 mb-2 rounded-3 shadow-sm overflow-hidden">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button acc-btn collapsed rounded-3" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseCustomSections">
+                                        <i class="bi bi-plus-square me-2 text-primary"></i>
+                                        <strong>9. Custom Sections</strong>
+                                    </button>
+                                </h2>
+                                <div id="collapseCustomSections" class="accordion-collapse collapse"
+                                    data-bs-parent="#cvBuilderAccordion">
+                                    <div class="accordion-body">
+                                        <div id="customsectionsContainer">
+
+                                            <div
+                                                class="dynamic-entry customsections-entry entry-card mb-3 position-relative">
+                                                <button type="button" class="btn btn-danger btn-sm remove-btn"
+                                                    onclick="removeEntry(this, updateCustomSectionsPreview)">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                                <div class="row g-2">
+                                                    <div class="col-12">
+                                                        <label
+                                                            class="form-label small fw-semibold text-uppercase tracking-wide">
+                                                            Section Title
+                                                        </label>
+                                                        <input type="text"
+                                                            class="form-control form-control-sm sync-customsections-title"
+                                                            name="customsections_title[]"
+                                                            placeholder="Awards &amp; Honours">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label
+                                                            class="form-label small fw-semibold text-uppercase tracking-wide">
+                                                            Content
+                                                        </label>
+                                                        <textarea
+                                                            class="form-control form-control-sm sync-customsections-content"
+                                                            name="customsections_content[]" rows="3"
+                                                            placeholder="Best Project Award, TechFest 2024&#10;Hackathon Winner – CodeStorm 2023"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div><!-- end #customsectionsContainer -->
+                                        <div class="d-flex justify-content-end mt-2">
+                                            <button type="button" class="btn btn-sm btn-outline-primary"
+                                                onclick="addMore('customsectionsContainer','customsections-entry',updateCustomSectionsPreview)">
+                                                <i class="bi bi-plus-circle me-1"></i> Add Custom Sections
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><!-- end Section 9 -->
+
+
+                        </div><!-- end .accordion -->
+
+                        <!-- ── SUBMIT BUTTON ── -->
+                        <button type="submit" class="btn btn-primary w-100 mt-4 py-3 fw-bold fs-5 submit-btn">
+                            {% if edit_mode %}
+                            <i class="bi bi-pencil-square me-2"></i> Update &amp; Save Resume
+                            {% else %}
+                            <i class="bi bi-magic me-2"></i> Save Resume
+                            {% endif %}
+                        </button>
+
+                    </form>
+                </div>
+
+                 
+            </div><!-- end col-lg-5 (LEFT FORM) -->
+
+
+            <!-- ════════════════════════════════════════════════════════════
+                 RIGHT COLUMN — ATS SCORE BOX + LIVE PREVIEW
+                 ════════════════════════════════════════════════════════════ -->
+            <div class="col-lg-7 preview-col">
+                           
+                <!-- ── PREVIEW HEADER LABEL ── -->
+                <div class="preview-header-bar d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-eye text-primary"></i>
+                        <span class="fw-semibold text-dark small">Live Preview</span>
+                    </div>
+                </div>
+
+                <!-- ── CV DOCUMENT ── -->
+                <div id="cvScrollWrapper">
+                    <div id="cvScaleClip">
+                        <div id="cvDocument">
+
+                            <!-- CV Header (simple preview mode — overwritten by template renderers) -->
+                            <div class="cv-header">
+                                <!-- Photo element — shown/hidden by previewImage() in JS -->
+                                <img id="prevPhoto" src="" alt="Profile" class="prev-photo" style="display:none;">
+                                <!-- Name — synced from #inputName by syncInputToPreview() -->
+                                <div class="cv-name dynamic-color-text" id="prevName">YOUR NAME</div>
+                                <!-- Job title — synced from #inputJobTarget -->
+                                <div class="cv-jobtitle text-muted" id="prevJobTarget">Your Professional Title</div>
+                                <!-- Contact row -->
+                                <div class="cv-contact mt-2">
+                                    <span><i class="bi bi-envelope-fill dynamic-color-text"></i> <span
+                                            id="prevEmail">email@example.com</span></span>
+                                    <span><i class="bi bi-telephone-fill dynamic-color-text"></i> <span
+                                            id="prevPhone">+91
+                                            0000000000</span></span>
+                                    <span><i class="bi bi-geo-alt-fill dynamic-color-text"></i> <span
+                                            id="prevAddress">City,
+                                            Country</span></span>
+                                </div>
+                                <!-- Social links — hidden until user fills in a value -->
+                                <div class="cv-links mt-1">
+                                    <span id="wrapLinkedin" style="display:none;">
+                                        <i class="bi bi-linkedin dynamic-color-text"></i>
+                                        <span id="prevLinkedin"></span>
+                                    </span>
+                                    <span id="wrapGithub" style="display:none;" class="ms-2">
+                                        <i class="bi bi-github dynamic-color-text"></i>
+                                        <span id="prevGithub"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Professional Summary (simple preview mode) -->
+                            <div class="cv-section-title dynamic-color-text dynamic-color-border">Professional
+                                Summary</div>
+                            <div id="prevSummary" class="cv-text text-secondary">
+                                Your professional summary will appear here as you type...
+                            </div>
+
+                            <!-- Education preview area (hidden until user adds education) -->
+                            <div id="previewEducationArea" style="display:none;">
+                                <div class="cv-section-title dynamic-color-text dynamic-color-border">Education
+                                </div>
+                                <div id="prevEducationList" class="cv-text"></div>
+                            </div>
+
+                            <!-- Experience preview area (hidden until user adds experience) -->
+                            <div id="previewExperienceArea" style="display:none;">
+                                <div class="cv-section-title dynamic-color-text dynamic-color-border">Work
+                                    Experience</div>
+                                <div id="prevExperienceList" class="cv-text"></div>
+                            </div>
+
+                            <!-- Projects preview area (hidden until user adds projects) -->
+                            <div id="previewProjectArea" style="display:none;">
+                                <div class="cv-section-title dynamic-color-text dynamic-color-border">Projects</div>
+                                <div id="prevProjectList" class="cv-text"></div>
+                            </div>
+
+                            <!-- Skills preview area (hidden until user adds skills) -->
+                            <div id="previewSkillsArea" style="display:none;">
+                                <div class="cv-section-title dynamic-color-text dynamic-color-border">Skills</div>
+                                <div id="prevSkillsList" class="cv-text"></div>
+                            </div>
+
+                            <!-- Languages preview area (hidden until user adds languages) -->
+                            <div id="previewLanguagesArea" style="display:none;">
+                                <div class="cv-section-title dynamic-color-text dynamic-color-border">Languages
+                                </div>
+                                <div id="prevLanguagesList" class="cv-text"></div>
+                            </div>
+
+                            <!-- Custom sections — injected by updateCustomSectionsPreview() in JS -->
+                            <div id="previewCustomSectionsArea"></div>
+
+                        </div><!-- end #cvDocument -->
+                    </div><!-- end #cvScaleClip -->
+                </div><!-- end #cvScrollWrapper -->
+
+            </div><!-- end col-lg-7 (RIGHT PREVIEW) -->
+
+        </div><!-- end .row (two-column grid) -->
+    </div><!-- end .builder-outer -->
+
+
+    <!-- ════════════════════════════════════════════════════════════════════
+         SCRIPTS
+    ════════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── In create_cv.html: Paste this block immediately BEFORE the closing </body> tag ── -->
+
+    {% if edit_mode and cv %}
+    <!-- In create_cv.html: Paste this <script> block immediately BEFORE the closing </body> tag
+     (place it AFTER the existing prefill script block) -->
+
+    <script>
+        (function () {
+            const form = document.getElementById('cvForm');
+            const btn = document.getElementById('submitCvBtn');
+            const label = document.getElementById('submitBtnText');
+            if (!form || !btn) return;
+
+            form.addEventListener('submit', function (e) {
+                // Prevent double-submission
+                if (btn.dataset.submitting === 'true') {
+                    e.preventDefault();
+                    return;
+                }
+
+                // Stamp the live ATS score into the hidden input right before POST
+                const hidden = document.getElementById('hiddenAtsScore');
+                if (hidden && typeof recalcAts === 'function') {
+                    hidden.value = recalcAts();
+                }
+
+                // Disable button and show spinner so the user knows it's working
+                btn.dataset.submitting = 'true';
+                btn.disabled = true;
+                btn.style.opacity = '0.75';
+                label.textContent = 'Saving…';
+            });
+        })();
+    </script>
+    {{ prefill_data|json_script:"smartcv-prefill" }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const raw = document.getElementById('smartcv-prefill');
+            if (!raw) return;
+            const data = JSON.parse(raw.textContent);
+
+            /* 1 ── Template */
+            const tmplRadio = document.querySelector(
+                'input[name="template_chosen"][value="' + data.template_chosen + '"]'
+            );
+            if (tmplRadio) tmplRadio.click();
+
+            /* 2 ── Font & Color */
+            const fontSel = document.getElementById('inputFont');
+            if (fontSel) {
+                // match stored family string against option values
+                [...fontSel.options].forEach(o => {
+                    if (o.value.toLowerCase().includes(data.font_family.toLowerCase())) {
+                        fontSel.value = o.value;
+                    }
+                });
+            }
+            const size_name_Sel = document.getElementById('inputFontSizeName');
+            if (size_name_Sel) size_name_Sel.value = data.font_size_name;
+
+            const size_heading_Sel = document.getElementById('inputFontSizeHeading');
+            if (size_heading_Sel) size_heading_Sel.value = data.font_size_heading;
+
+            const size_details_Sel = document.getElementById('inputFontSizeDetails');
+            if (size_details_Sel) size_details_Sel.value = data.font_size_details;
+
+            const colorInput = document.getElementById('hexColorValue');
+            if (colorInput) colorInput.value = data.color_scheme;
+            const matchSwatch = document.querySelector(
+                '.hex-swatch[data-color="' + data.color_scheme + '"]'
+            );
+            if (matchSwatch) {
+                document.querySelectorAll('.hex-swatch').forEach(s => s.classList.remove('active'));
+                matchSwatch.classList.add('active');
+            }
+
+            /* 3 ── Personal Info */
+            const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+            setVal('inputName', data.full_name);
+            setVal('inputJobTarget', data.job_title_target);
+            setVal('inputEmail', data.email);
+            setVal('inputPhone', data.phone);
+            setVal('inputAddress', data.address);
+            setVal('inputLinkedin', data.linkedin);
+            setVal('inputGithub', data.github);
+            setVal('inputSummary', data.summary);
+
+            /* 4 ── Education */
+            (data.educations || []).forEach(function (e, i) {
+                if (i > 0) addMore('eduContainer', 'edu-entry', null);
+                const rows = document.querySelectorAll('#eduContainer .edu-entry');
+                const entry = rows[i];
+                if (!entry) return;
+                entry.querySelector('.sync-edu-degree').value = e.degree || '';
+                entry.querySelector('.sync-edu-uni').value = e.institution || '';
+                entry.querySelector('.sync-edu-duration').value = e.edu_duration || '';
+                entry.querySelector('.sync-edu-cgpa').value = e.cgpa_percentage || '';
+            });
+
+            /* 5 ── Experience */
+            (data.experiences || []).forEach(function (e, i) {
+                if (i > 0) addMore('expContainer', 'exp-entry', null);
+                const rows = document.querySelectorAll('#expContainer .exp-entry');
+                const entry = rows[i];
+                if (!entry) return;
+                entry.querySelector('.sync-exp-title').value = e.role || '';
+                entry.querySelector('.sync-exp-company').value = e.company || '';
+                entry.querySelector('.sync-exp-duration').value = e.exp_duration || '';
+                entry.querySelector('.sync-exp-desc').value = e.description || '';
+            });
+
+            /* 6 ── Projects */
+            (data.projects || []).forEach(function (p, i) {
+                if (i > 0) addMore('projContainer', 'proj-entry', null);
+                const rows = document.querySelectorAll('#projContainer .proj-entry');
+                const entry = rows[i];
+                if (!entry) return;
+                entry.querySelector('.sync-proj-title').value = p.project_title || '';
+                entry.querySelector('.sync-proj-tech').value = p.technologies_used || '';
+                entry.querySelector('.sync-proj-link').value = p.link || '';
+                entry.querySelector('.sync-proj-desc').value = p.description || '';
+            });
+
+            /* 7 ── Skills & Languages */
+            setVal('inputSkills', data.skills);
+            setVal('inputLanguages', data.languages);
+
+            /* 8 ── Custom Sections */
+            (data.custom_sections || []).forEach(function (s, i) {
+                if (i > 0) addMore('customsectionsContainer', 'customsections-entry', null);
+                const rows = document.querySelectorAll('#customsectionsContainer .customsections-entry');
+                const entry = rows[i];
+                if (!entry) return;
+
+                const titleInput = entry.querySelector('.sync-customsections-title');
+                const contentInput = entry.querySelector('.sync-customsections-content');
+                if (titleInput) titleInput.value = s.section_title || s.title || '';
+                if (contentInput) contentInput.value = s.section_content || s.content || '';
+            });
+
+            /* 9 ── Trigger full re-render */
+            setTimeout(function () {
+                if (typeof applyStyles === 'function') applyStyles();
+                if (typeof updatePreview === 'function') updatePreview();
+                if (typeof recalcAts === 'function') recalcAts();
+            }, 50);
+        });
+
+
+    </script>
+    {% endif %}
+
+    <!-- html2pdf.js — used by downloadPdfHandler() for A4 PDF generation (FIX #6) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Bootstrap 5 JS (bundle includes Popper) — powers accordion, collapse -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SmartCV application script — all CV builder logic -->
+    <!-- <script src="{% static 'js/cv_templates.js' %}"></script> -->
+    <script src="{% static 'js/create_cv.js' %}"></script>
+
+</body>
+
+</html>
