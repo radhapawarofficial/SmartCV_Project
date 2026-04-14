@@ -770,9 +770,8 @@ function renderT1(d) {
     `;
     const eduHtml = d.edu.length ? d.edu.map(e => `
         <div style="margin-bottom:6px;">
-            <div style="font-size: var(--font-size-details); font-weight:600;">${esc(e.degree)}</div>
-            <div style="font-size: var(--font-size-details); opacity:.8;">${esc(e.uni)}</div>
-            <div style="font-size: var(--font-size-details); opacity:.7;">${esc(e.edu_duration)}${e.cgpa ? ' • ' + esc(e.cgpa) : ''}</div>
+            <div style="font-size: var(--font-size-details); font-weight:600;">${esc(e.degree)}${e.edu_duration ? ' ' + esc(e.edu_duration) : ''}</div>
+            <div style="font-size: var(--font-size-details); opacity:.8;">${esc(e.uni)}${e.cgpa ? ' - ' + esc(e.cgpa) : ''}</div>
         </div>`).join('') : '';
 
     const skillsHtml = d.skills.length ? d.skills.map(s =>
@@ -891,9 +890,11 @@ function renderT3(d) {
             <div class="sec-title">Experience</div>
             ${d.experience.map(e => `
                 <div style="margin-bottom:10px;">
-                    <div class="entry-head" style="font-size: var(--font-size-details);">${esc(e.title)}</div>
-                    <div class="entry-sub" style="font-size: var(--font-size-details);">${esc(e.company)}</div>
-                    <div class="entry-date" style="font-size: var(--font-size-details);">${esc(e.exp_duration)}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                            <span style="font-weight:700;font-size: var(--font-size-details);color:#0f172a;">${esc(e.title)}</span>
+                            ${e.exp_duration ? `<span style="font-size: var(--font-size-details);color:#64748b;white-space:nowrap;flex-shrink:0;">${esc(e.exp_duration)}</span>` : ''}
+                        </div>
+                    <div class="entry-sub" style="font-size: var(--font-size-details);">${esc(e.company)}</div>                    
                     <div class="entry-desc" style="font-size: var(--font-size-details);">${esc(e.desc)}</div>
                 </div>`).join('')}` : ''}
         ${d.projects.length ? `
@@ -902,6 +903,7 @@ function renderT3(d) {
                 <div style="margin-bottom:8px;">
                     <div class="entry-head" style="font-size: var(--font-size-details);">${esc(p.title)}</div>
                     <div class="entry-sub" style="font-size: var(--font-size-details);">${esc(p.tech)}</div>
+                    <div class="entry-sub" style="font-size: var(--font-size-details);"><a href="${esc(p.link)}" target="_blank" style="color:inherit;text-decoration:underline;">${esc(p.link)}</a></div>
                     <div class="entry-desc" style="font-size: var(--font-size-details);">${esc(p.desc)}</div>
                 </div>`).join('')}` : ''}
         ${d.customsections && d.customsections.length ? d.customsections.map(c => `
@@ -917,9 +919,8 @@ function renderT3(d) {
             <div class="sec-title">Education</div>
             ${d.education.map(e => `
                 <div style="margin-bottom:8px;">
-                    <div class="entry-head" style="font-size: var(--font-size-details);">${esc(e.degree)}</div>
-                    <div class="entry-sub" style="font-size: var(--font-size-details);">${esc(e.uni)}</div>
-                    <div class="entry-date" style="font-size: var(--font-size-details);">${esc(e.edu_duration)}</div>
+                    <div class="entry-head" style="font-size: var(--font-size-details);">${esc(e.degree)}${e.edu_duration ? ' ' + esc(e.edu_duration) : ''}</div>
+                    <div class="entry-sub" style="font-size: var(--font-size-details);">${esc(e.uni)}${e.cgpa ? ' - ' + esc(e.cgpa) : ''}</div>
                 </div>`).join('')}` : ''}
         ${d.skills.length ? `
             <div class="sec-title">Skills</div>
@@ -953,7 +954,7 @@ function renderT4(d) {
             ${d.education.length ? `
                 <div class="sb-section">Education</div>
                 ${d.education.map(e => `
-                    <div class="sb-edu" style="font-size: var(--font-size-details);"><strong>${esc(e.degree)}</strong>${esc(e.uni)}<br><small>${esc(e.edu_duration)}</small></div>`
+                    <div class="sb-edu" style="font-size: var(--font-size-details);"><strong>${esc(e.degree)}</strong>${esc(e.uni)}<br><small>${esc(e.edu_duration)}${e.cgpa ? ' - ' + esc(e.cgpa) : ''}</small></div>`
     ).join('')}` : ''}
             ${d.skills.length ? `
                 <div class="sb-section">Skills</div>
@@ -987,22 +988,22 @@ function renderT5(d) {
             <div class="cv-role" style="color: var(--cv-color);">${esc(d.jobTitle)}</div>
             <div class="cv-contacts" style="font-size: var(--font-size-details);">${contacts(d)}</div>
         </div>
-        ${d.summary ? `<div class="sec-title" style="color: var(--cv-color);">Professional Summary</div><hr class="sec-divider" style="border-top-color: var(--cv-color);"><div class="summary" style="font-size: var(--font-size-details);">${esc(d.summary)}</div>` : ''}
+        ${d.summary ? `<div class="sec-title" style="color: var(--cv-color);">Professional Summary</div><div class="summary" style="font-size: var(--font-size-details);">${esc(d.summary)}</div>` : ''}
         ${d.education.length ? `
-            <div class="sec-title" style="color: var(--cv-color);">Education</div><hr class="sec-divider" style="border-top-color: var(--cv-color);">
+            <div class="sec-title" style="color: var(--cv-color);">Education</div>
             ${d.education.map(e => `
                 <div style="margin-bottom:8px;">
                     <div class="entry-head" style="font-size: var(--font-size-details);"><span>${esc(e.degree)}</span><span>${esc(e.edu_duration)}</span></div>
-                    <div class="entry-sub" style="font-size: var(--font-size-details);">${esc(e.uni)}</div>
+                    <div class="entry-sub" style="font-size: var(--font-size-details);">${esc(e.uni)}${e.cgpa ? ' - ' + esc(e.cgpa) : ''}</div>
                 </div>`).join('')}` : ''}
-        ${d.experience.length ? `<div class="sec-title" style="color: var(--cv-color);">Work Experience</div><hr class="sec-divider" style="border-top-color: var(--cv-color);">${expBlock(d.experience, 'cv-t5')}` : ''}
-        ${d.projects.length ? `<div class="sec-title" style="color: var(--cv-color);">Projects</div><hr class="sec-divider" style="border-top-color: var(--cv-color);">${projBlock(d.projects, 'cv-t5')}` : ''}
+        ${d.experience.length ? `<div class="sec-title" style="color: var(--cv-color);">Work Experience</div>${expBlock(d.experience, 'cv-t5')}` : ''}
+        ${d.projects.length ? `<div class="sec-title" style="color: var(--cv-color);">Projects</div>${projBlock(d.projects, 'cv-t5')}` : ''}
         ${d.skills.length ? `
-            <div class="sec-title" style="color: var(--cv-color);">Skills</div><hr class="sec-divider" style="border-top-color: var(--cv-color);">
+            <div class="sec-title" style="color: var(--cv-color);">Skills</div>
             <div class="skill-list" style="font-size: var(--font-size-details);">${d.skills.map(s => `<span class="skill-item">${esc(s)}</span>`).join('')}</div>` : ''}
-        ${d.languages.length ? `<div class="sec-title" style="color: var(--cv-color);">Languages</div><hr class="sec-divider" style="border-top-color: var(--cv-color);"><div class="summary" style="font-size: var(--font-size-details);">${d.languages.map(esc).join(' · ')}</div>` : ''}
+        ${d.languages.length ? `<div class="sec-title" style="color: var(--cv-color);">Languages</div><div class="summary" style="font-size: var(--font-size-details);">${d.languages.map(esc).join(' · ')}</div>` : ''}
         ${d.customsections && d.customsections.length ? d.customsections.map(c => `
-            <div class="sec-title" style="color: var(--cv-color);">${esc(c.title)}</div><hr class="sec-divider" style="border-top-color: var(--cv-color);">
+            <div class="sec-title" style="color: var(--cv-color);">${esc(c.title)}</div>
             <div class="entry-desc" style="white-space:pre-wrap; margin-bottom: 10px; font-size: var(--font-size-details);">${esc(c.content)}</div>
         `).join('') : ''}
     </div>`;
@@ -1048,18 +1049,25 @@ function renderT7(d) {
             <div class="sec-title">Experience</div>
             ${d.experience.map(e => `
                 <div class="entry-wrap">
-                    <div class="entry-head" style="font-size: var(--font-size-details);">${esc(e.title)}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                            <span class="entry-head" style="font-size: var(--font-size-details);"">${esc(e.title)}</span>
+                            ${e.exp_duration ? `<span class="entry-date" style="font-size: var(--font-size-details);">${esc(e.exp_duration)}</span>` : ''}
+                    </div>
                     <div class="entry-sub" style="font-size: var(--font-size-details);">${esc(e.company)}</div>
-                    <div class="entry-date" style="font-size: var(--font-size-details);">${esc(e.exp_duration)}</div>
                     <div class="entry-desc" style="font-size: var(--font-size-details);">${esc(e.desc)}</div>
                 </div>`).join('')}` : ''}
         ${d.education.length ? `
             <div class="sec-title">Education</div>
             ${d.education.map(e => `
                 <div class="entry-wrap">
-                    <div class="entry-head" style="font-size: var(--font-size-details);">${esc(e.degree)}</div>
-                    <div class="entry-sub" style="font-size: var(--font-size-details);">${esc(e.uni)}</div>
-                    <div class="entry-date" style="font-size: var(--font-size-details);">${esc(e.edu_duration)}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                            <span class="entry-head" style="font-size: var(--font-size-details);">${esc(e.degree)}</span>
+                            ${e.edu_duration ? `<span class="entry-date" style="font-size: var(--font-size-details);">${esc(e.edu_duration)}</span>` : ''}
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                            <span class="entry-sub" style="font-size: var(--font-size-details);">${esc(e.uni)}</span>
+                            ${e.cgpa ? `<span class="entry-sub" style="font-size: var(--font-size-details);">${esc(e.cgpa)}</span>` : ''}
+                    </div>
                 </div>`).join('')}` : ''}
         ${d.projects.length ? `
             <div class="sec-title">Projects</div>
@@ -1067,6 +1075,7 @@ function renderT7(d) {
                 <div class="entry-wrap">
                     <div class="entry-head" style="font-size: var(--font-size-details);">${esc(p.title)}</div>
                     <div class="entry-sub" style="font-size: var(--font-size-details);">${esc(p.tech)}</div>
+                    <div class="entry-sub" style="font-size: var(--font-size-details);"><a href="${esc(p.link)}" target="_blank" style="color:inherit;text-decoration:underline;">${esc(p.link)}</a></div>
                     <div class="entry-desc" style="font-size: var(--font-size-details);">${esc(p.desc)}</div>
                 </div>`).join('')}` : ''}
         ${d.skills.length ? `
@@ -1095,7 +1104,7 @@ function renderT8(d) {
                 ${d.education.map(e => `
                     <div style="margin-bottom:7px;">
                         <div style="font-size: var(--font-size-details); font-weight:700;color:#0f172a;">${esc(e.degree)}</div>
-                        <div style="font-size: var(--font-size-details); color:#64748b;">${esc(e.uni)}</div>
+                        <div style="font-size: var(--font-size-details); color:#64748b;">${esc(e.uni)}${e.cgpa ? ' - ' + esc(e.cgpa) : ''}</div>
                         <div style="font-size: var(--font-size-details); color:#94a3b8;">${esc(e.edu_duration)}</div>
                     </div>`).join('')}` : ''}
             ${d.skills.length ? `
@@ -1168,9 +1177,9 @@ function renderT10(d) {
                 <div class="sb-section">Education</div>
                 ${d.education.map(e => `
                     <div style="margin-bottom:8px;font-size: var(--font-size-details);">
-                        <strong style="display:block;">${esc(e.degree)}</strong>
-                        ${esc(e.uni)}<br>
-                        <small style="opacity:.7;">${esc(e.edu_duration)}</small>
+                        <strong style="display:block;">${esc(e.degree)} - ${esc(e.cgpa)}</strong>
+                        ${esc(e.uni)}<br>${esc(e.edu_duration)}
+                        <small style="opacity:.7;"></small>
                     </div>`).join('')}` : ''}
             ${d.skills.length ? `
                 <div class="sb-section">Skills</div>
@@ -1519,7 +1528,6 @@ function recalcAts() {
 
     return score;
 }
-
 
 /* ═══════════════════════════════════════════════════════════════════════════
    12. PDF DOWNLOAD (FIXED - "SAVE AS" DIALOG)

@@ -86,17 +86,14 @@ def signup_view(request):
                 email=data['email'],
                 password=data['password']
             )
-           
-            # 3. Create the Profile (for the extra details)
-            # This links the details directly to the user we just created
-            UserProfile.objects.create(
-                user=user,
-                full_name=data['full_name'],
-                age=data['age'],
-                gender=data['gender'],
-                phone_no=data['phone_no']
-            )
 
+            # 3. Update the Profile (created automatically via signals) with extra details
+            profile = user.userprofile  
+            profile.full_name = data['full_name']
+            profile.age = data['age']
+            profile.gender = data['gender']
+            profile.phone_no = data['phone_no']
+            profile.save()
 
             # 4. Log the user in immediately
             login(request, user)
