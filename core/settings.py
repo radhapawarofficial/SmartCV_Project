@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-#-cu41y97a6#mg%bz0cg#q)@w=fr*1mlny#vhfzjjj)er-eeau
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -140,7 +141,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # 1. The URL used to access static files in the browser
 STATIC_URL = 'static/'
-
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 # 2. The folders where YOU put your custom CSS/Images
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
