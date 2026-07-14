@@ -1,4 +1,5 @@
 from django.contrib import admin
+from .models import Testimonial
 from .models import (
     Resume, 
     PersonalDetails, 
@@ -9,7 +10,7 @@ from .models import (
     Language,
     CustomSection,
 )
-
+admin.site.register(Testimonial)
 # --- 1. DEFINE INLINES FIRST ---
 class PersonalDetailsInline(admin.StackedInline):
     model = PersonalDetails

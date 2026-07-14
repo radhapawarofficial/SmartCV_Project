@@ -663,6 +663,7 @@
                 <ul class="navbar-nav ms-auto align-items-center gap-lg-3">
                     <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">HOME</a></li>
                     <li class="nav-item"><a class="nav-link " href="{% url 'about' %}">ABOUT US</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'testimonial' %}">TESTIMONIALS</a></li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a href="{% url 'create_cv' %}" class="btn btn-sm px-3 py-2 fw-semibold ms-2"
@@ -936,6 +937,37 @@
         </div>
     </section>
 
+    <!-- ===== TESTIMONIALS SECTION ===== -->
+
+    <section class="py-5" style="background: #ffffff;">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">TESTIMONIALS</span>
+            <h2 class="section-title">What Users Say</h2>
+        </div>
+        <div class="row g-4">
+            {% for t in testimonial %}
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card" style="border: 1px solid #e2e8f0;">
+                    <div class="feature-icon" style="background: rgba(37, 99, 235, 0.1);">
+                        <i data-lucide="message-square" style="width: 32px; height: 32px; color: var(--royal-blue);"></i>
+                    </div>
+                    <p class="feature-description" style="font-style: italic;">"{{ t.review }}"</p>
+                    <hr>
+                    <h6 class="mb-0 fw-bold">{{ t.name }}</h6>
+                    <small class="text-slate">{{ t.profession }}</small>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-slate">No reviews yet. Be the first to share your experience!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
     <!-- ===== FINAL CTA SECTION ===== -->
     <section class="cta-section">
         <div class="container">
@@ -1014,6 +1046,7 @@
                     <ul class="list-unstyled footer-links">
                         <li><a href="{% url 'home' %}">HOME</a></li>
                         <li><a href="{% url 'about' %}">ABOUT US</a></li>
+                        <li><a href="{% url 'testimonial' %}">TESTIMONIALS</a></li>
                         {% if user.is_authenticated %}
                         <li><a href="{% url 'create_cv' %}">CREATE CV</a></li>
                         <li><a href="{% url 'dashboard' %}">DASHBOARD</a></li>

@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils.dateparse import parse_date
-
+from .models import Testimonial
 
 # Third-party libraries
 import spacy
@@ -27,6 +27,21 @@ try:
     nlp = spacy.load("en_core_web_sm")
 except:
     nlp = None
+
+
+def all_testimonials(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        profession = request.POST.get('profession')
+        review = request.POST.get('review')
+        pass
+        if name and review:
+            Testimonial.objects.create(name=name, profession=profession, review=review)
+            messages.success(request, "Thank you for sharing your experience!")
+            return redirect('testimonial')
+            
+    testimonials = Testimonial.objects.all().order_by('-id')
+    return render(request, 'testimonial.html', {'testimonials': testimonials})
 
 
 def analyze_resume_text(text):
@@ -58,6 +73,9 @@ def analyze_resume_text(text):
 
 
 def home(request):
+    # Fetch the latest 3 testimonials to display on the landing page
+    testimonial = Testimonial.objects.all().order_by('-created_at')[:3] 
+    return render(request, 'home.html', {'testimonial': testimonial}) 
     return render(request, 'home.html')
 
 
