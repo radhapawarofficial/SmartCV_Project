@@ -44,7 +44,7 @@ This project was developed to address the challenges job seekers face with Appli
 <img width="624" height="280" alt="user profile" src="https://github.com/user-attachments/assets/6a29065b-3035-4bca-bbad-587bb160c532" />
 
 ## 🎓 Acknowledgments
-This project was developed during my final year of Bachelor of Computer Applications (BCA) at <strong>Tilak Maharashtra Vidyapeeth</strong>. Special thanks to <strong>Onkar Infotech</strong> for the internship opportunity that allowed me to develop and refine this system.
+This project was developed during my final year of Bachelor of Computer Applications (BCA) at <strong>Tilak Maharashtra Vidyapeeth</strong>.
 
 ---
 *Developed by Radha Pawar*
